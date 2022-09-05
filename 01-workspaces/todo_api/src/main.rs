@@ -1,3 +1,6 @@
+use todo_shared;
 fn main() {
-    println!("Hello, world!");
+    let one = 1;
+    let result = todo_shared::add(one, 3);
+    println!("The result is {}", result);
 }
