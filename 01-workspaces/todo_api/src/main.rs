@@ -1,6 +1,5 @@
-use todo_shared;
+use todo_shared::models::todo_item::TodoItem;
 fn main() {
-    let one = 1;
-    let result = todo_shared::add(one, 3);
-    println!("The result is {}", result);
+    let todo_item = TodoItem::new("Going full stack on rust", "Let's go full stack on Rust");
+    println!("Created a new todo item : {:?}", todo_item);
 }
