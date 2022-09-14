@@ -12,7 +12,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 
 We already covered the first 3 requirements, let's see if we can get some actual todo items over the wire.
 To serialize to JSON and deserialize from JSON, we will need another crate, as it is not part of the `std` library.
-There are a number of Crates that can do this for us, but the most well known crate is [Serde](https://docs.rs/serde_json/latest/serde_json/), so we'll stick with that.
+There are a number of Crates that can do this for us, but the most well known crate is [Serde](https://docs.rs/serde_json/latest/serde_json/), so we'll stick with that for now.
 
 Let's add Serde to our `Cargo.Toml` file. Note that our `todo_item` stuct resides in the `todo_shared` crate. So we will need to add it there. We will use this crate for both our backend as frontend projects. Any project including the `todo_shared` crate, will directly be able to (de)serialize `todo_item` entities from and to JSON..
 
@@ -30,7 +30,7 @@ NOTE: Unfortunately, if we want to use JSON with Actixweb, we can only work with
 (Documentation)[https://docs.rs/actix-web/3.3.2/actix_web/web/struct.Json.html#impl-FromRequest]
 It indicates we can only use owned, not borrowed, data with the Json type if we want actix-web to extract types from the request for you. Thus we will have to use String for our &str members here.
 
-#### **`todo_shared/todo_item.rs`**
+#### **`todo_shared/src/models/todo_item.rs`**
 ```rust
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
@@ -72,7 +72,7 @@ impl TodoItem {
 ```
 
 Let's also add to new request structs to our todo_item.rs file
-#### **`todo_shared/todo_item.rs`**
+#### **`todo_shared/src/models/todo_item.rs`**
 ```rust
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UpdateTodoItemRequest {

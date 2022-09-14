@@ -20,7 +20,7 @@ For example: a `todo controller` would handle all incoming requests related to `
 
 Let's create `todo_controller.rs` and add the following functions:
 
-#### **`todo_controller.rs`**
+#### **`todo_api/src/api/todo_controller.rs`**
 ```rust
 #[get("/todo")]
 async fn get_todos() -> impl Responder {
@@ -55,7 +55,7 @@ I could go to our `main.rs` file and register each handler individually. Rather,
 
 To be able to register all endpoints at once, I create a configure method, which I can call in my `main.rs` file.
 
-#### **`todo_controller.rs`**
+#### **`todo_api/src/api/todo_controller.rs`**
 ```rust 
 pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
     |config: &mut ServiceConfig| {
@@ -70,8 +70,7 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
 ```
 Notice that the `configure()` function, is the only publicly exposed member in this file.
 
-
-#### **`main.rs`**
+#### **`todo_api/src/main.rs`**
 ```rust
 async fn main() -> std::io::Result<()> {
     HttpServer::new(|| App::new().configure(api::todo_controller::configure()))

@@ -11,7 +11,7 @@ Rather then duplicating code, you can create a workspace with multiple projects 
 Let's say we want to create a client-server application (a Todo app). There is an interface definition shared by the client and the server application.
 
 Imagina the following `Cargo.toml` file.
-
+#### **`Cargo.toml`**
 ```yaml
 [workspace]
 members = [
@@ -28,6 +28,8 @@ The same goes for the native Linux application `todo_app`, which will also be co
 In order to share models and perhaps logic between applications, we create another crate called `todo_shared` which will contain all shared models and logic for other projects in the workspace.
 
 Let's say we have the following model for TodoItem defined in todo_shared > models > todo_item.rs
+
+#### **`todo_shared/src/models/todo_item.rs`**
 ```rust
 use std::time::SystemTime;
 
@@ -68,6 +70,8 @@ impl<'a> TodoItem<'a> {
 ```
 
 In our todo_api project, we can use `todo_shared` and make use of the public members of that crate, which is TodoItem in this case and the `New` function
+
+#### **`todo_api/src/main.rs`**
 ```rust
 use todo_shared::TodoItem;
 fn main() {

@@ -26,6 +26,7 @@ There are a number of crates that can help us with this:
 For this example, we'll be using the ActixWeb framework as it is very well known, very popular, well maintained, and supports our basic needs out of the box.
 
 First, let's start off with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
+#### **`todo_api/Cargo.toml`**
 ```toml
 [dependencies]
 actix-web = "4"
@@ -33,6 +34,7 @@ actix-web = "4"
 
 Setting up a simple webserver is pretty straight forward:
 
+#### **`todo_api/src/main.rs`**
 ```rust
 use actix_web::{get, web, App, HttpServer, Responder};
 
