@@ -2,15 +2,15 @@ use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct TodoItem<'a> {
+pub struct TodoItem {
     // The unique identifier of the todo item
     pub id: u32,
 
     // The title of the todo item
-    pub title: &'a str,
+    pub title: String,
 
     // The description of the todo item
-    pub description: &'a str,
+    pub description: String,
 
     // Indicates whether the todo item is completed
     pub completed: bool,
@@ -22,12 +22,33 @@ pub struct TodoItem<'a> {
     pub created_at: SystemTime,
 }
 
-impl<'a> TodoItem<'a> {
-    pub fn new(title: &'a str, description: &'a str) -> Self {
+#[derive(Serialize, Deserialize, Debug)]
+pub struct UpdateTodoItemRequest {
+    // The new title of the todo item
+    pub new_title: String,
+
+    // The new description of the todo item
+    pub new_description: String,
+
+    // Indicates whether the todo item is completed
+    pub completed: bool,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct CreateTodoItemRequest {
+    // The title of the todo item
+    pub title: String,
+
+    // The description of the todo item
+    pub description: String,
+}
+
+impl TodoItem {
+    pub fn new(title: &str, description: &str) -> Self {
         TodoItem {
             id: 0,
-            title,
-            description,
+            title: title.to_string(),
+            description: description.to_string(),
             completed: false,
             completed_at: SystemTime::now(),
             created_at: SystemTime::now(),

@@ -28,7 +28,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<u32>) -> impl Responder {
     format!("hello from get todos by id")
 }
 
@@ -38,12 +38,12 @@ async fn create_todo() -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<String>) -> impl Responder {
+async fn delete_todo(_id: web::Path<u32>) -> impl Responder {
     format!("hello from delete todo with id")
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<String>) -> impl Responder {
+async fn update_todo(_id: web::Path<u32>) -> impl Responder {
     format!("hello from update todos with id")
 }
 ```
