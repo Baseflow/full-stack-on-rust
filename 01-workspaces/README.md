@@ -30,12 +30,11 @@ In order to share models and perhaps logic between applications, we create anoth
 Let's say we have the following model for TodoItem defined in todo_shared > models > todo_item.rs
 ```rust
 use std::time::SystemTime;
-use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct TodoItem<'a> {
     // The unique identifier of the todo item
-    pub id: uuid::Uuid,
+    pub id: u32,
 
     // The title of the todo item
     pub title: &'a str,
@@ -56,7 +55,7 @@ pub struct TodoItem<'a> {
 impl<'a> TodoItem<'a> {
     pub fn new(title: &'a str, description: &'a str) -> Self {
         TodoItem {
-            id: Uuid::new_v4(),
+            id: 0,
             title,
             description,
             completed: false,
