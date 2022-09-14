@@ -23,3 +23,16 @@ Additionally, we'll add the `derive` feature from Serde, to be able to make use 
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 ```
+
+We can now add the Serialize and Deserialize derive macro's on top of our `todo_item` struct;
+
+#### **`todo_shared\Cargo.toml`**
+```rust
+use serde::{Deserialize, Serialize};
+use std::time::SystemTime;
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct TodoItem<'a> {
+    ...
+}
+```
