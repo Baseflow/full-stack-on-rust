@@ -1,0 +1,92 @@
+# Rest API
+
+Our backends are usually RESTful API's containing a number of functional features we would like to embed in this project.
+
+* Http Protocol handling
+* Open API V3 spec / including SwaggerUI.
+* ORM tooling for connecting to the database
+* Asynchronous request handling
+* JWT token validation for incoming requests
+
+Let's start with building a webserver first that is able to run on a particular portnumber and handle Http requests for us.
+There are a number of crates that can help us with this:
+
+* ActixWeb
+* Hyper
+* Rocket
+* Warp 
+* Axum
+* Iron
+* Poem
+* Tide
+* Rouille
+
+For this example, we'll be using the ActixWeb framework as it is very well known, very popular, well maintained, and supports our basic needs out of the box.
+
+First, let's start off with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
+```toml
+[dependencies]
+actix-web = "4"
+```
+
+Setting up a simple webserver is pretty straight forward:
+
+```rust
+use actix_web::{get, web, App, HttpServer, Responder};
+
+#[get("/hello/{name}")]
+async fn greet(name: web::Path<String>) -> impl Responder {
+    format!("Hello {name}!")
+}
+
+#[actix_web::main] // or #[tokio::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .route("/hello", web::get().to(|| async { "Hello World!" }))
+            .service(greet)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}
+```
+
+We'll start by adding including all the required modules from the actix-web crate (`get`, `web`, `App`, `HttpServer` and `Responder`).
+
+Our main function is setup to be our Tokio asynchronous entry point.
+```rust
+#[actix_web::main] // or #[tokio::main]
+async fn main() -> std::io::Result<()> {
+```
+
+We'll define a new WebServer (`HttpServer::new()`), and bind it to portnumber 8080 on localhost (`.bind(("127.0.0.1", 8080))`).
+
+There are a couple of things to notice here:
+There are 2 ways to register a route and a handler with actix-web.
+* `.route("{PATH}", web::{METHOD}.To({HANDLER}))`
+  * In this example: `.route("/hello", web::get().to(|| async { "Hello World!" }))`
+* Adding the `#[{METHOD("{PATH}")}]` macro to a function, and registering this as `.service({FN_NAME})`.
+  * In this example: 
+  ```rust 
+  #[get("/hello/{name}")]
+  async fn greet(name: web::Path<String>) -> impl Responder {
+    format!("Hello {name}!")
+  }
+  ```
+  combined with `.service(greet)`
+
+Personally, I prefer the latter as this scales better when our project grows. It gives space to split endpoints to seperate handlers, across multiple files, tigh them in one place with the end point, and just to the registration of the handlers and router in our bootstrapper.
+
+
+We can now perform 2 http requests.
+* `/hello` should return "Hello World!";
+* `/hello/thomas` should return "Hello Thomas"
+
+```shell
+~ curl http://localhost:8080/hello
+Hello World!
+~ curl http://localhost:8080/hello/Thomas
+Hello Thomas
+```
+
