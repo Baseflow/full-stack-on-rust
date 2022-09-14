@@ -2,11 +2,12 @@
 
 Our backends are usually RESTful API's containing a number of functional features we would like to embed in this project.
 
-* Http Protocol handling
-* Open API V3 spec / including SwaggerUI.
-* ORM tooling for connecting to the database
-* Asynchronous request handling
-* JWT token validation for incoming requests
+* [ ] http protocol handling
+* [ ] asynchronous request handling
+* [ ] json serialization
+* [ ] orm tooling for connecting to the database
+* [ ] open api v3 spec / including swaggerui.
+* [ ] jwt token validation for incoming requests
 
 Let's start with building a webserver first that is able to run on a particular portnumber and handle Http requests for us.
 There are a number of crates that can help us with this:
@@ -46,7 +47,7 @@ async fn main() -> std::io::Result<()> {
             .route("/hello", web::get().to(|| async { "Hello World!" }))
             .service(greet)
     })
-    .bind(("127.0.0.1", 8080))?
+    .bind((Ipv4Addr::UNSPECIFIED, 8080))?
     .run()
     .await
 }
@@ -60,7 +61,7 @@ Our main function is setup to be our Tokio asynchronous entry point.
 async fn main() -> std::io::Result<()> {
 ```
 
-We'll define a new WebServer (`HttpServer::new()`), and bind it to portnumber 8080 on localhost (`.bind(("127.0.0.1", 8080))`).
+We'll define a new WebServer (`HttpServer::new()`), and bind it to portnumber 8080 on any address (`.bind((Ipv4Addr::UNSPECIFIED, 8080))`).
 
 There are a couple of things to notice here:
 There are 2 ways to register a route and a handler with actix-web.
@@ -78,6 +79,14 @@ There are 2 ways to register a route and a handler with actix-web.
 
 Personally, I prefer the latter as this scales better when our project grows. It gives space to split endpoints to seperate handlers, across multiple files, tigh them in one place with the end point, and just to the registration of the handlers and router in our bootstrapper.
 
+Note: the is also the option to combine these to methods, which might be convenient when you don't want to use the macro:
+```rust
+.route("/hello/{name}", web::get().to(greet))
+
+async fn greet(name: web::Path<String>) -> impl Responder {
+    format!("Hello {name}!")
+}
+```
 
 We can now perform 2 http requests.
 * `/hello` should return "Hello World!";

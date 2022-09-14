@@ -70,9 +70,9 @@ impl<'a> TodoItem<'a> {
 
 In our todo_api project, we can use `todo_shared` and make use of the public members of that crate, which is TodoItem in this case and the `New` function
 ```rust
-use todo_shared::models::todo_item::todoitem;
+use todo_shared::TodoItem;
 fn main() {
-    let todo_item = todoitem::new("going full stack on rust", "let's go full stack on rust");
+    let todo_item = TodoItem::new("going full stack on rust", "let's go full stack on rust");
     println!("created a new todo item : {:?}", todo_item);
 }
 ```
