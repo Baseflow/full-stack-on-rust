@@ -144,8 +144,11 @@ async fn update_todo(_id: web::Path<u32>, todo: Json<UpdateTodoItemRequest>) -> 
 
 
 When we test our updated endpoints, we can see we can now send and receive JSON:
+### Get all
 ```shell
 ~ curl http://localhost:8080/todo -s | jq
+```
+```json
 [
   {
     "id": 0,
@@ -176,8 +179,12 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
     }
   }
 ]
-
+```
+### Get by id
+```shell
 ~ curl http://localhost:8080/todo/12 -s | jq
+```
+```json
 {
   "id": 0,
   "title": "going full stack on rust",
@@ -192,8 +199,16 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
     "nanos_since_epoch": 448129961
   }
 }
-
-~ curl --header "Content-Type: application/json"  --request POST  --data '{"title":"xyz","description":"xyz"}' http://localhost:8080/todo -s | jq
+```
+### Insert a new todo item
+Notice we also send JSON in our request body.
+```shell
+~ curl --header "Content-Type: application/json" \
+       --request POST \
+       --data '{"title":"xyz","description":"xyz"}' \
+       http://localhost:8080/todo -s | jq
+```
+```json
 {
   "id": 0,
   "title": "xyz",
@@ -209,7 +224,16 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
   }
 }
 
-~ curl --header "Content-Type: application/json" --request PUT --data '{"new_title":"xyz","new_description":"xyz", "completed": true}' http://localhost:8080/todo/12 -s | jq
+```
+### Update an existing todo item
+Notice we also send JSON in our request body.
+```shell
+~ curl --header "Content-Type: application/json" \
+       --request PUT \
+       --data '{"new_title":"xyz","new_description":"xyz", "completed": true}' \
+       http://localhost:8080/todo/12 -s | jq
+```
+```json
 {
   "id": 0,
   "title": "xyz",
@@ -225,4 +249,4 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
   }
 }
 ```
-Nice! We can now read and write json over the wire.
+Nice! We can now read and write json over the wire. Up next is actually persisting our data
