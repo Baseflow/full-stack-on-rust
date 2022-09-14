@@ -4,6 +4,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 
 * [x] http protocol handling
 * [x] asynchronous request handling
+* [ ] implement REST api specification (GET, POST, PUT, DELETE)
 * [ ] json serialization
 * [ ] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
