@@ -1,0 +1,7 @@
+[workspace]
+members = [
+    "todo_shared",
+    "todo_api",
+    "todo_frontend",
+    "todo_app"
+]
