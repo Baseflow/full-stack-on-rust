@@ -4,7 +4,7 @@ use std::time::SystemTime;
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TodoItem {
     // The unique identifier of the todo item
-    pub id: u32,
+    pub id: i32,
 
     // The title of the todo item
     pub title: String,

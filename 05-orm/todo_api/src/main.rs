@@ -12,6 +12,7 @@ use std::net::Ipv4Addr;
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
     dotenv().ok();
+    env_logger::init();
 
     HttpServer::new(|| App::new().configure(api::todo_controller::configure()))
         .bind((Ipv4Addr::UNSPECIFIED, 8080))?

@@ -22,7 +22,9 @@ There are a couple of ORM crates available for Rust.
 
 Diesel is by far the most wel known ORM crate with over 4.5 million downloads. It supports SqLite, Postsqres and MySql out of the box, but can be extended with other database engines. We'll stick with that for our full-stack adventure.
 
-Let's add diesel to our api project. We'll also add `dotenvy` to make use of environment variables. For connection pooling we'll use `r2d2`. Additionally, we'll also add `diesel_migrations` for automatic migration deployment upon application startup.
+Let's add diesel to our api project. We'll also add `dotenvy` to make use of environment variables. 
+For connection pooling we'll use `r2d2`. Additionally, we'll also add `diesel_migrations` for automatic migration deployment upon application startup. 
+Finally we'll add `env_logger` and `log` to add a logging framework.
 
 #### **`todo_api/Cargo.toml`**
 ```toml
@@ -31,6 +33,8 @@ diesel = { version = "2.0.0", features = ["postgres", "r2d2"] }
 dotenv = "0.15.0"
 diesel_migrations = "1.4.0"
 r2d2 = "0.8.9"
+env_logger = "0.9.0"
+log = "0.4.17"
 ```
 
 You should also install the `diesel_cli` binary to make use of the CLI tooling diesel offers, to create migrations and schema's.
@@ -157,5 +161,6 @@ pub fn get_pool() -> PostgresPool {
 ## Repository pattern
 This part is more of a personal preference, but I usually use a repository pattern for my data layer interfacing. My controllers and business logic should not be aware on there the data is stored, but rather just know that there is 'a' place (repository) where todo items are stored. I should be able to interchange repositories implementations by changing registrations, rather then changing business logic all over the place. Again, this is personal, as an ORM already abstracts a lot of stuff for us. Don't follow up on my advice if you don't want to.
 
-Let's create a repository pattern 
+Let's create a repository pattern by defining the `Repository<T>` trait. It defines a generic astraction for basic CRUD actions on a data source.
+
 

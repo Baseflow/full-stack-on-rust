@@ -9,8 +9,10 @@ pub struct TodoEntityRepository {
 }
 
 impl TodoEntityRepository {
-    pub fn new(db_context: db_context::PostgresPool) -> Self {
-        TodoEntityRepository { db_context }
+    pub fn new() -> Self {
+        TodoEntityRepository {
+            db_context: db_context::get_pool(),
+        }
     }
 }
 
@@ -23,7 +25,13 @@ impl Repository<TodoEntity> for TodoEntityRepository {
     }
 
     fn get_by_id(&self, todo_id: i32) -> Option<TodoEntity> {
-        todo!();
+        let mut connection = self.db_context.get().unwrap();
+        let item = todos.find(todo_id).first(&mut connection);
+        if item.is_ok() {
+            Some(item.unwrap())
+        } else {
+            None
+        }
     }
 
     fn insert(&self, entity: TodoEntity) -> Result<TodoEntity, String> {
