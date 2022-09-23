@@ -3,12 +3,17 @@ use actix_web::HttpResponse;
 use actix_web::{delete, get, post, put, web, Responder};
 use todo_shared::{CreateTodoItemRequest, TodoItem, UpdateTodoItemRequest};
 
+use crate::data::{db_context, repository::Repository, todo_repository};
+use crate::entities::todo_entity::TodoEntity;
+use actix_web::web::Data;
+
 #[get("/todo")]
-async fn get_todos() -> impl Responder {
+async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Responder {
     let response = vec![
         TodoItem::new("Todo item 1", "Todo item 1 body"),
         TodoItem::new("Todo item 2", "Todo item 2 body"),
     ];
+    let result = repository.get_all();
     HttpResponse::Ok().json(response)
 }
 
@@ -38,6 +43,11 @@ async fn update_todo(_id: web::Path<u32>, todo: Json<UpdateTodoItemRequest>) -> 
 pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
     |config: &mut ServiceConfig| {
         config
+            // Register our repository;
+            .app_data(todo_repository::TodoEntityRepository::new(
+                db_context::get_pool(),
+            ))
+            // register our endpoints
             .service(get_todos)
             .service(create_todo)
             .service(delete_todo)

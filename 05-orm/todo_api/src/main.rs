@@ -2,9 +2,10 @@
 extern crate diesel;
 use actix_web::{App, HttpServer};
 mod api;
+mod data;
 mod entities;
-mod schema;
-use dotenvy::dotenv;
+pub mod schema;
+use dotenv::dotenv;
 
 use std::net::Ipv4Addr;
 

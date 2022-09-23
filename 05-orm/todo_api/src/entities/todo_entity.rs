@@ -1,10 +1,8 @@
-use diesel::prelude::*;
-use std::time::SystemTime;
-
+use chrono::NaiveDateTime;
 #[derive(Queryable)]
-pub struct TodoItem {
+pub struct TodoEntity {
     // The unique identifier of the todo item
-    pub id: u32,
+    pub id: i32,
 
     // The title of the todo item
     pub title: String,
@@ -16,8 +14,8 @@ pub struct TodoItem {
     pub completed: bool,
 
     // Epoch timestamp when the todo item was completed
-    pub completed_at: SystemTime,
+    pub completed_at: NaiveDateTime,
 
     // Epoch timestamp when the todo item was created
-    pub created_at: SystemTime,
+    pub created_at: NaiveDateTime,
 }

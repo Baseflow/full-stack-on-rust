@@ -4,7 +4,7 @@ table! {
         title -> Text,
         description -> Text,
         completed -> Bool,
-        completed_at -> Nullable<Timestamp>,
-        created_at -> Nullable<Timestamp>,
+        completed_at -> Timestamp,
+        created_at -> Timestamp,
     }
 }

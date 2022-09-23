@@ -154,3 +154,8 @@ pub fn get_pool() -> PostgresPool {
         .expect("could not build connection pool")
 }
 ```
+## Repository pattern
+This part is more of a personal preference, but I usually use a repository pattern for my data layer interfacing. My controllers and business logic should not be aware on there the data is stored, but rather just know that there is 'a' place (repository) where todo items are stored. I should be able to interchange repositories implementations by changing registrations, rather then changing business logic all over the place. Again, this is personal, as an ORM already abstracts a lot of stuff for us. Don't follow up on my advice if you don't want to.
+
+Let's create a repository pattern 
+
