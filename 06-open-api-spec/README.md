@@ -217,4 +217,5 @@ async fn main() -> std::io::Result<()> {
 > Note that to force the closure to take ownership of `openapi` (and any other referenced variables), we have to use the `move` keyword
 
 And when we navigate to [localhost](http://localhost:8080/swagger-ui/) we'll be presented with a very nice swagger-ui page.
+![image](https://user-images.githubusercontent.com/35781348/192316201-065370b4-56f7-434e-b99a-490ac82ad7fa.png)
 
