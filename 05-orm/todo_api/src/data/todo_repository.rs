@@ -1,3 +1,5 @@
+use uuid::Uuid;
+
 use crate::data::db_context;
 use crate::data::repository::Repository;
 use crate::diesel::prelude::*;
@@ -25,7 +27,7 @@ impl Repository<TodoEntity> for TodoEntityRepository {
             .expect("Error loading todo items")
     }
 
-    fn get_by_id(&self, todo_id: i32) -> Option<TodoEntity> {
+    fn get_by_id(&self, todo_id: Uuid) -> Option<TodoEntity> {
         let mut connection = self.db_context.get().unwrap();
         let item = todos.find(todo_id).first(&mut connection);
         if item.is_ok() {
@@ -44,7 +46,7 @@ impl Repository<TodoEntity> for TodoEntityRepository {
         Ok(result)
     }
 
-    fn update(&self, todo_id: i32, entity: TodoEntity) -> Result<TodoEntity, String> {
+    fn update(&self, todo_id: Uuid, entity: TodoEntity) -> Result<TodoEntity, String> {
         let mut connection = self.db_context.get().unwrap();
         let todo_item = diesel::update(todos.find(todo_id))
             .set((
@@ -59,7 +61,7 @@ impl Repository<TodoEntity> for TodoEntityRepository {
         Ok(todo_item)
     }
 
-    fn delete(&self, todo_id: i32) -> Result<bool, String> {
+    fn delete(&self, todo_id: Uuid) -> Result<bool, String> {
         let mut connection = self.db_context.get().unwrap();
         let num_deleted = diesel::delete(todos.find(todo_id))
             .execute(&mut connection)

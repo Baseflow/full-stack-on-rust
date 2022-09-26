@@ -8,6 +8,7 @@ use crate::data::todo_repository::TodoEntityRepository;
 use crate::entities::todo_entity::TodoEntity;
 use actix_web::web::Data;
 use std::sync::Arc;
+use uuid::Uuid;
 
 use log::{error, info, warn};
 
@@ -26,10 +27,12 @@ async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Respond
 
 #[get("/todo/{id}")]
 async fn get_todo_by_id(
-    id: web::Path<i32>, // The identifier of the item to retrieve
+    id: web::Path<String>, // The identifier of the item to retrieve
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
-    let todo_id = id.into_inner();
+    let todo_id =
+        Uuid::parse_str(&id.into_inner()).expect("The given identifier is not a valid uuid");
+
     // Query our entity from the data store.
     info!("Getting todo item with id {}", todo_id);
     let entity = repository.get_by_id(todo_id);
@@ -72,10 +75,11 @@ async fn create_todo(
 
 #[delete("/todo/{id}")]
 async fn delete_todo(
-    id: web::Path<i32>,
+    id: web::Path<String>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
-    let todo_id = id.into_inner();
+    let todo_id =
+        Uuid::parse_str(&id.into_inner()).expect("The given identifier is not a valid uuid");
     let result = repository.delete(todo_id);
     match result {
         Ok(success) => match success {
@@ -91,12 +95,13 @@ async fn delete_todo(
 
 #[put("/todo/{id}")]
 async fn update_todo(
-    id: web::Path<i32>,
+    id: web::Path<String>,
     todo: Json<UpdateTodoItemRequest>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     let request_body = todo.into_inner();
-    let todo_id = id.into_inner();
+    let todo_id =
+        Uuid::parse_str(&id.into_inner()).expect("The given identifier is not a valid uuid");
     let result = repository.update(todo_id, request_body.into());
     match result {
         Ok(entity) => {

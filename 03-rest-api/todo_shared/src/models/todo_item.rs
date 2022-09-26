@@ -1,9 +1,9 @@
 use std::time::SystemTime;
-
+use uuid::Uuid;
 #[derive(Debug)]
 pub struct TodoItem<'a> {
     // The unique identifier of the todo item
-    pub id: u32,
+    pub id: Uuid,
 
     // The title of the todo item
     pub title: &'a str,
@@ -24,7 +24,7 @@ pub struct TodoItem<'a> {
 impl<'a> TodoItem<'a> {
     pub fn new(title: &'a str, description: &'a str) -> Self {
         TodoItem {
-            id: 0,
+            id: Uuid::new_v4(),
             title,
             description,
             completed: false,

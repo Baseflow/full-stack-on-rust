@@ -1,14 +1,14 @@
 use crate::schema::todos;
 use std::time::SystemTime;
 use todo_shared::{CreateTodoItemRequest, TodoItem, UpdateTodoItemRequest};
+use uuid::Uuid;
 
 #[derive(Queryable, Insertable)]
 #[diesel(table_name = todos)]
 #[diesel(primary_key(id))]
 pub struct TodoEntity {
     /// The unique identifier of the todo item
-    #[diesel(deserialize_as = i32)]
-    pub id: Option<i32>,
+    pub id: Uuid,
 
     /// The title of the todo item
     pub title: String,
@@ -29,7 +29,7 @@ pub struct TodoEntity {
 impl From<TodoEntity> for TodoItem {
     fn from(entity: TodoEntity) -> Self {
         TodoItem {
-            id: entity.id.unwrap_or(0),
+            id: entity.id,
             title: entity.title,
             description: entity.description,
             completed: entity.completed,
@@ -42,7 +42,7 @@ impl From<TodoEntity> for TodoItem {
 impl From<CreateTodoItemRequest> for TodoEntity {
     fn from(request: CreateTodoItemRequest) -> Self {
         TodoEntity {
-            id: None,
+            id: Uuid::new_v4(),
             title: request.title,
             description: request.description,
             created_at: SystemTime::now(),
@@ -55,7 +55,7 @@ impl From<CreateTodoItemRequest> for TodoEntity {
 impl From<UpdateTodoItemRequest> for TodoEntity {
     fn from(request: UpdateTodoItemRequest) -> Self {
         TodoEntity {
-            id: None,
+            id: Uuid::new_v4(),
             title: request.new_title,
             description: request.new_description,
             created_at: SystemTime::now(),

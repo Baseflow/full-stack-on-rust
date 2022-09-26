@@ -1,6 +1,6 @@
 -- Your SQL goes here
 CREATE TABLE todos (
-  id SERIAL PRIMARY KEY,
+  id uuid PRIMARY KEY,
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   completed BOOLEAN NOT NULL DEFAULT 'f',

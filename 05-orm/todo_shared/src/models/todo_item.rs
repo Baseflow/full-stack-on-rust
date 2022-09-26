@@ -1,10 +1,11 @@
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TodoItem {
     // The unique identifier of the todo item
-    pub id: i32,
+    pub id: Uuid,
 
     // The title of the todo item
     pub title: String,

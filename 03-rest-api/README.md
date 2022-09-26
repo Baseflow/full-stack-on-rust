@@ -28,7 +28,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<u32>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
     format!("hello from get todos by id")
 }
 
@@ -38,12 +38,12 @@ async fn create_todo() -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<u32>) -> impl Responder {
+async fn delete_todo(_id: web::Path<String>) -> impl Responder {
     format!("hello from delete todo with id")
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<u32>) -> impl Responder {
+async fn update_todo(_id: web::Path<String>) -> impl Responder {
     format!("hello from update todos with id")
 }
 ```
@@ -86,7 +86,7 @@ Nice and clean.
 
 We now have RESTful api endpoints to handle our todo management
 ```shell
-~ curl http://localhost:8080/todo/12
+~ curl http://localhost:8080/todo/549dd9a2-aa7a-4d29-ad4f-ded12fe02af8
 hello from get todos by id
 
 ~ curl http://localhost:8080/todo
@@ -95,9 +95,9 @@ hello from get todos
 ~ curl -X POST http://localhost:8080/todo
 hello from add todo
 
-~ curl -X PUT http://localhost:8080/todo/12
+~ curl -X PUT http://localhost:8080/todo/549dd9a2-aa7a-4d29-ad4f-ded12fe02af8
 hello from update todos with id
 
-~ curl -X DELETE http://localhost:8080/todo/12
+~ curl -X DELETE http://localhost:8080/todo/549dd9a2-aa7a-4d29-ad4f-ded12fe02af8
 hello from delete todo with id
 ```

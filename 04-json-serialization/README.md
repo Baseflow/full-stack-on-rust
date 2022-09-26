@@ -17,11 +17,13 @@ There are a number of Crates that can do this for us, but the most well known cr
 Let's add Serde to our `Cargo.Toml` file. Note that our `todo_item` stuct resides in the `todo_shared` crate. So we will need to add it there. We will use this crate for both our backend as frontend projects. Any project including the `todo_shared` crate, will directly be able to (de)serialize `todo_item` entities from and to JSON..
 
 Additionally, we'll add the `derive` feature from Serde, to be able to make use of the device macro and keep our code nice and clean.
+Important note here: in order for us to be able to (de)serialize UUID from/to Json using Serde, we'll need to the serde feature for uuid too.
 #### **`todo_shared/Cargo.toml`**
 ```toml
 [dependencies]
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+uuid = {version = "1.1.2", features = ["v4", "serde"]}
 ```
 
 We can now add the Serialize and Deserialize derive macro's on top of our `todo_item` struct;
@@ -34,11 +36,12 @@ It indicates we can only use owned, not borrowed, data with the Json type if we 
 ```rust
 use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
+use uuid::Uuid;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct TodoItem {
     // The unique identifier of the todo item
-    pub id: u32,
+    pub id: Uuid,
 
     // The title of the todo item
     pub title: String,
@@ -60,7 +63,7 @@ pub struct TodoItem {
 impl TodoItem {
     pub fn new(title: &str, description: &str) -> Self {
         TodoItem {
-            id: 0,
+            id: Uuid::new_v4(),
             title: title.to_string(),
             description: description.to_string(),
             completed: false,
@@ -119,7 +122,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<u32>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(
         "going full stack on rust",
         "we need more love for rust",
@@ -132,16 +135,15 @@ async fn create_todo(todo: Json<CreateTodoItemRequest>) -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<u32>) -> impl Responder {
+async fn delete_todo(_id: web::Path<String>) -> impl Responder {
     HttpResponse::Ok().finish()
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<u32>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
+async fn update_todo(_id: web::Path<String>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(&todo.new_title, &todo.new_description))
 }
 ```
-
 
 When we test our updated endpoints, we can see we can now send and receive JSON:
 ### Get all
@@ -151,7 +153,7 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
 ```json
 [
   {
-    "id": 0,
+    "id": "549dd9a2-aa7a-4d29-ad4f-ded12fe02af8"
     "title": "Todo item 1",
     "description": "Todo item 1 body",
     "completed": false,
@@ -165,7 +167,7 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
     }
   },
   {
-    "id": 0,
+    "id": "c2c50db4-3d8e-11ed-b878-0242ac120002",
     "title": "Todo item 2",
     "description": "Todo item 2 body",
     "completed": false,
@@ -182,11 +184,11 @@ When we test our updated endpoints, we can see we can now send and receive JSON:
 ```
 ### Get by id
 ```shell
-~ curl http://localhost:8080/todo/12 -s | jq
+~ curl http://localhost:8080/todo/c2c50db4-3d8e-11ed-b878-0242ac120002 -s | jq
 ```
 ```json
 {
-  "id": 0,
+  "id": "c2c50db4-3d8e-11ed-b878-0242ac120002",
   "title": "going full stack on rust",
   "description": "we need more love for rust",
   "completed": false,
@@ -210,7 +212,7 @@ Notice we also send JSON in our request body.
 ```
 ```json
 {
-  "id": 0,
+  "id": "c2c50db4-3d8e-11ed-b878-0242ac120002",
   "title": "xyz",
   "description": "xyz",
   "completed": false,
@@ -231,11 +233,11 @@ Notice we also send JSON in our request body.
 ~ curl --header "Content-Type: application/json" \
        --request PUT \
        --data '{"new_title":"xyz","new_description":"xyz", "completed": true}' \
-       http://localhost:8080/todo/12 -s | jq
+       http://localhost:8080/todo/c2c50db4-3d8e-11ed-b878-0242ac120002 -s | jq
 ```
 ```json
 {
-  "id": 0,
+  "id": "c2c50db4-3d8e-11ed-b878-0242ac120002",
   "title": "xyz",
   "description": "xyz",
   "completed": false,

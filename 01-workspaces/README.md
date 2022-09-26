@@ -32,11 +32,12 @@ Let's say we have the following model for TodoItem defined in todo_shared > mode
 #### **`todo_shared/src/models/todo_item.rs`**
 ```rust
 use std::time::SystemTime;
+use uuid::Uuid;
 
 #[derive(Debug)]
 pub struct TodoItem<'a> {
     // The unique identifier of the todo item
-    pub id: u32,
+    pub id: Uuid,
 
     // The title of the todo item
     pub title: &'a str,
@@ -57,7 +58,7 @@ pub struct TodoItem<'a> {
 impl<'a> TodoItem<'a> {
     pub fn new(title: &'a str, description: &'a str) -> Self {
         TodoItem {
-            id: 0,
+            id: Uuid::new_v4(),
             title,
             description,
             completed: false,
@@ -69,6 +70,11 @@ impl<'a> TodoItem<'a> {
 
 ```
 
+Keep in mind, UUID is not part of the std library, so we will need to add these to our Cargo.toml file for the todo_shared project.
+#### **`todo_shared/Cargo.toml`**
+```toml
+uuid = {version = "1.1.2", features = ["v4"]}
+```
 In our todo_api project, we can use `todo_shared` and make use of the public members of that crate, which is TodoItem in this case and the `New` function
 
 #### **`todo_api/src/main.rs`**

@@ -13,7 +13,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<u32>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(
         "going full stack on rust",
         "we need more love for rust",
@@ -26,12 +26,12 @@ async fn create_todo(todo: Json<CreateTodoItemRequest>) -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<u32>) -> impl Responder {
+async fn delete_todo(_id: web::Path<String>) -> impl Responder {
     HttpResponse::Ok().finish()
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<u32>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
+async fn update_todo(_id: web::Path<String>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(&todo.new_title, &todo.new_description))
 }
 
