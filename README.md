@@ -19,4 +19,8 @@ It includes step by step documentation on how to setup a full rust stack for bot
     6. [Using the repository](05-orm/README.md#Using-the-repository)
     7. [Testing our API](05-orm/README.md#Testing-our-API)
     8. [Automatically apply pending Migrations](05-orm/README.md#Automatically-apply-pending-Migrations)
-    
+6. [Open API Spec](05-open-api-spec)
+    1. [Including our public models to the Open API V3 spec](06-open-api-spec/README.md#Including-our-public-models-to-the-Open-API-V3-spec)
+    2. [Including information about our endpoints](06-open-api-spec/README.md#Including-information-about-our-endpoints)
+    3. [Configure open api](06-open-api-spec/README.md#Configure-Open-API")
+    4. [Setup swagger-ui](06-open-api-spec/README.md#Setup-swagger-ui")

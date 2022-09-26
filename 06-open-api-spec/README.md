@@ -49,7 +49,7 @@ pub struct CreateTodoItemRequest {
 }
 ```
 
-## Including information about our endpoints.
+## Including information about our endpoints
 We should also add information regarding our endpoints to the Open API spec. Utoipa provides us the the macro's to do so. We should also add nice documentation to our controllers, which 
 
 #### **`todo_api/src/api/todo_controller.rs`**
@@ -157,6 +157,8 @@ async fn update_todo(
 }
 ```
 
+## Configure Open API
+
 Now that we have defined our endpoints, we can start wiring up Utoipa. 
 First let's configure utoipa in our api module.
 
@@ -190,6 +192,7 @@ pub fn register_open_api_spec() -> utoipa::openapi::OpenApi {
 }
 ```
 
+## Setup swagger-ui
 And finally we'll add an endpoint for out swagger-ui in our main.rs file.
 
 #### **`todo_api/src/main.rs`**
