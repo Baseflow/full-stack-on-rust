@@ -82,7 +82,7 @@ async fn main() -> std::io::Result<()> {
 
 Nice and clean.
 
-### Testing our endpoints
+## Testing our endpoints
 
 We now have RESTful api endpoints to handle our todo management
 ```shell

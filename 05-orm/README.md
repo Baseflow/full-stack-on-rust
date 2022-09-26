@@ -22,6 +22,7 @@ There are a couple of ORM crates available for Rust.
 
 Diesel is by far the most wel known ORM crate with over 4.5 million downloads. It supports SqLite, Postsqres and MySql out of the box, but can be extended with other database engines. We'll stick with that for our full-stack adventure.
 
+## Diesel
 Let's add diesel to our api project. We'll also add `dotenvy` to make use of environment variables. 
 For connection pooling we'll use `r2d2`. Additionally, we'll also add `diesel_migrations` for automatic migration deployment upon application startup.
 Out of the box, uuid's are not serialized by diesel, but adding the 'uuid' feature to diesel will supply us with the logic to do so.
@@ -69,7 +70,7 @@ Additionally, a migrations folder is already created with an 'Initial setup' mig
 
 Migrations always contain up and down scripts, used for applying and un-applying migrations as you want.
 
-### Adding tables to the database
+## Adding tables to the database
 As I mentioned before, ORM tooling can be usefull to create/manage migrations, and have them applied to the database for us.
 Diesel_cli can be used to create migrations.
 ```shell
@@ -102,7 +103,7 @@ DROP TABLE todos
 
 We can apply our new migration using `diesel migration run`.
 
-## Query todo items.
+## Query todo items
 To make sure our item can be queried, serialized and deserialized from/to the database, we'll need to add the `Queryable` derive macro to our todo_item.
 However, the current todo_item model we have represent something that defines our public interface from/to the api and the clients. No clien should have to depend on diesel in order to function.
 Therefore, we'll create a new todo_item entity, which represents the todo_api as returned/send to the database. Only our API project knows about the underlying datasource, and how to interact with that. We can use mapping later to map our entity to the public interface model, returned by our API to the clients.
@@ -139,7 +140,7 @@ pub struct TodoEntity {
 }
 ```
 
-## Connection pooling.
+## Connection pooling
 Creating a database connection can easily be done with Diesel. However, creating a new connection for every incoming request doesn't scale all that well. Additionally, Postgresql only allows 100 connections to be opened by default to the server, and will, with high loads, eventually block new connections from being created.
 
 In order to solve this, we'll be using connection pooling. We'll keep a maximum of let's say, 10 connections, alive and re-use them. This scales a lot better as the load on our server increases over time.
@@ -617,7 +618,7 @@ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 ```
 If our logic works fine, we should no longer get a result from the last request.
 
-## Automatically apply pending Migrations.
+## Automatically apply pending Migrations
 Whenever we make changes to our database model, we have to make sure migrations are applied to our databases. I mention plural here, because you have one on your machine, your co-worker has one too. Then there is an CD/CI chain for various environments (DEV/STAGING/PRODUCTION). Chances of us forgetting to apply these migrations are definitly there (unless managed by CD).
 
 Diesel is capable of automatically applying changes to our database when our executable starts.
