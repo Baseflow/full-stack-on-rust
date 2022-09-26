@@ -26,6 +26,7 @@ pub struct TodoEntity {
     pub created_at: SystemTime,
 }
 
+// Convert from TodoEntity to TodoItem
 impl From<TodoEntity> for TodoItem {
     fn from(entity: TodoEntity) -> Self {
         TodoItem {
@@ -39,6 +40,7 @@ impl From<TodoEntity> for TodoItem {
     }
 }
 
+// Convert from CreateTodoItemRequest to TodoEntity
 impl From<CreateTodoItemRequest> for TodoEntity {
     fn from(request: CreateTodoItemRequest) -> Self {
         TodoEntity {
@@ -52,6 +54,7 @@ impl From<CreateTodoItemRequest> for TodoEntity {
     }
 }
 
+// Convert from UpdateTodoItemRequest to TodoEntity
 impl From<UpdateTodoItemRequest> for TodoEntity {
     fn from(request: UpdateTodoItemRequest) -> Self {
         TodoEntity {
