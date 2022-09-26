@@ -22,5 +22,5 @@ It includes step by step documentation on how to setup a full rust stack for bot
 6. [Open API Spec](05-open-api-spec)
     1. [Including our public models to the Open API V3 spec](06-open-api-spec/README.md#including-information-about-our-endpoints)
     2. [Including information about our endpoints](06-open-api-spec/README.md#including-information-about-our-endpoints)
-    3. [Configure open api](06-open-api-spec/README.md#setup-swagger-ui")
-    4. [Setup swagger-ui](06-open-api-spec/README.md#setup-swagger-ui")
+    3. [Configure open api](06-open-api-spec/README.md#setup-swagger-ui)
+    4. [Setup swagger-ui](06-open-api-spec/README.md#setup-swagger-ui)
