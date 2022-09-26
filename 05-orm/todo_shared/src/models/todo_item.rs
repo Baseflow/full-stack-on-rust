@@ -16,7 +16,7 @@ pub struct TodoItem {
     pub completed: bool,
 
     // Epoch timestamp when the todo item was completed
-    pub completed_at: SystemTime,
+    pub completed_at: Option<SystemTime>,
 
     // Epoch timestamp when the todo item was created
     pub created_at: SystemTime,
@@ -41,17 +41,4 @@ pub struct CreateTodoItemRequest {
 
     // The description of the todo item
     pub description: String,
-}
-
-impl TodoItem {
-    pub fn new(title: &str, description: &str) -> Self {
-        TodoItem {
-            id: 0,
-            title: title.to_string(),
-            description: description.to_string(),
-            completed: false,
-            completed_at: SystemTime::now(),
-            created_at: SystemTime::now(),
-        }
-    }
 }

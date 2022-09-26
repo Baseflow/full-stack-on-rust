@@ -1,10 +1,10 @@
 table! {
     todos (id) {
-        id -> Int4,
+        id -> Integer,
         title -> Text,
         description -> Text,
         completed -> Bool,
-        completed_at -> Timestamp,
+        completed_at -> Nullable<Timestamp>,
         created_at -> Timestamp,
     }
 }
