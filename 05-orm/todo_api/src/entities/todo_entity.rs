@@ -3,7 +3,7 @@ use std::time::SystemTime;
 use todo_shared::{CreateTodoItemRequest, TodoItem, UpdateTodoItemRequest};
 use uuid::Uuid;
 
-#[derive(Queryable, Insertable)]
+#[derive(Queryable, Insertable, Clone)]
 #[diesel(table_name = todos)]
 #[diesel(primary_key(id))]
 pub struct TodoEntity {

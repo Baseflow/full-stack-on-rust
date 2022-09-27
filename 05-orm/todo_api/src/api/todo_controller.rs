@@ -153,3 +153,124 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
             .service(update_todo);
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use std::time::SystemTime;
+
+    use actix_web::{test, App};
+    use uuid::Uuid;
+
+    use std::collections::HashMap;
+    use std::sync::Arc;
+    use std::sync::Mutex;
+
+    use crate::data::repository::Repository;
+    use crate::entities::todo_entity::TodoEntity;
+
+    use super::*;
+
+    // Define a mock for Repository<TodoEntity>
+    pub struct TodoEntityRepositoryMock {
+        db: Arc<Mutex<HashMap<Uuid, TodoEntity>>>,
+    }
+
+    // Implement our repository pattern for the mock.
+    impl Repository<TodoEntity> for TodoEntityRepositoryMock {
+        fn get_all(&self) -> Vec<TodoEntity> {
+            self.db
+                .lock()
+                .unwrap()
+                .values()
+                .map(|v| v.clone())
+                .collect()
+        }
+
+        fn get_by_id(&self, todo_id: Uuid) -> Option<TodoEntity> {
+            self.db.lock().unwrap().get(&todo_id).map(|f| f.clone())
+        }
+
+        fn insert<'a>(&self, entity: TodoEntity) -> Result<TodoEntity, String> {
+            self.db.lock().unwrap().insert(entity.id, entity.clone());
+            Ok(entity)
+        }
+
+        fn update(&self, todo_id: Uuid, entity: TodoEntity) -> Result<TodoEntity, String> {
+            *self.db.lock().unwrap().get_mut(&todo_id).unwrap() = entity.clone();
+            Ok(entity)
+        }
+
+        fn delete(&self, todo_id: Uuid) -> Result<bool, String> {
+            self.db.lock().unwrap().remove(&todo_id);
+            Ok(true)
+        }
+    }
+
+    fn get_repository_mock_with_data() -> Arc<dyn Repository<TodoEntity>> {
+        // Create our repository
+        let repository = TodoEntityRepositoryMock {
+            db: Arc::new(Mutex::new(HashMap::new())),
+        };
+
+        // insert some mock data
+        let _ = repository.insert(TodoEntity {
+            id: Uuid::parse_str("cdce7fda-909e-41cb-8507-abceb316a5b4").unwrap(),
+            title: "Test the microservice".to_string(),
+            description: "We should test the get all method".to_string(),
+            completed: true,
+            completed_at: Some(SystemTime::now()),
+            created_at: SystemTime::now(),
+        });
+        let _ = repository
+            .insert(TodoEntity {
+                id: Uuid::parse_str("120400b8-eee8-47cc-9e96-5bc0a3e2e874").unwrap(),
+                title: "Use a mock repository".to_string(),
+                description: "We should test that we can also use a mock for the same handler"
+                    .to_string(),
+                completed: true,
+                completed_at: Some(SystemTime::now()),
+                created_at: SystemTime::now(),
+            })
+            .unwrap();
+
+        let repository_arc: Arc<dyn Repository<TodoEntity>> = Arc::new(repository);
+        repository_arc
+    }
+
+    #[actix_web::test]
+    async fn test_index_get_all() {
+        let app = test::init_service(
+            App::new()
+                .app_data(Data::from(get_repository_mock_with_data()))
+                .service(get_todos),
+        )
+        .await;
+        let req = test::TestRequest::default().uri("/todo").to_request();
+
+        let resp: Vec<TodoItem> = test::call_and_read_body_json(&app, req).await;
+        assert_eq!(resp.len(), 2);
+    }
+
+    #[actix_web::test]
+    async fn test_index_get_by_id() {
+        let repository = get_repository_mock_with_data();
+        let app = test::init_service(
+            App::new()
+                .app_data(Data::from(repository))
+                .service(get_todo_by_id),
+        )
+        .await;
+
+        let req = test::TestRequest::default()
+            .uri("/todo/120400b8-eee8-47cc-9e96-5bc0a3e2e874")
+            .to_request();
+
+        let resp: TodoItem = test::call_and_read_body_json(&app, req).await;
+        assert_eq!(resp.title, "Use a mock repository");
+        assert_eq!(
+            resp.description,
+            "We should test that we can also use a mock for the same handler"
+        );
+        assert_eq!(resp.completed, true);
+    }
+}
