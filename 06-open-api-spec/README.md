@@ -222,3 +222,9 @@ async fn main() -> std::io::Result<()> {
 And when we navigate to [localhost](http://localhost:8080/swagger-ui/) we'll be presented with a very nice swagger-ui page.
 ![image](https://user-images.githubusercontent.com/35781348/192316201-065370b4-56f7-434e-b99a-490ac82ad7fa.png)
 
+## BONUS
+Do you have third parties intergrating with your backend. Here is why the open-api spec is so powerful:
+Navigate to [Swagger editor](https://editor-next.swagger.io/) and paste in the yaml definition from the Open API spec. 
+From here you can just generate a client for all sorts of programming languages. This will make intergration for your 3rd parties much easier.
+> Note, I'm currently unable to output the yaml definition yet, but converting online van [JSON > YAML](https://www.json2yaml.com/) acually works pretty well.
+> Will update this repository later with a YAML example.
