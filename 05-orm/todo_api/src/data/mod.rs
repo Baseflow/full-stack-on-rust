@@ -4,7 +4,7 @@ pub mod todo_repository;
 
 use crate::Error;
 use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
-pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("../migrations");
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./migrations");
 
 pub fn run_migrations() -> Result<(), Box<dyn Error + Send + Sync + 'static>> {
     // This will run the necessary migrations.
