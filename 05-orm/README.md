@@ -668,6 +668,6 @@ async fn main() -> std::io::Result<()> {
 That's it, this wraps up our orm tooling chapter. It's been a long ride, but our backend project is slowly comming towards an end almost.
 
 ## BONUS IF YOU MADE IT HERE
-If you're still wondering why we added the abstraction for Repository<TodoEntity>. I've added unit tests to the **todo_controller.rs** file. 
+If you're still wondering why we added the abstraction for `Repository<TodoEntity>`. I've added unit tests to the [todo controller](todo_api/src/api/todo_controller.rs). 
 You'll see i've added a mock repository that mimics the behavior of our database variant of the repository, but uses an in-memory datastore for it.
 I can register that, in stead of the original variant, and unit test (not intergration test) my request handlers and mapping, without modifying any code. This is only possible because we rely on a abstraction.
