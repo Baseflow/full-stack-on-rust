@@ -238,7 +238,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_index_get_all() {
+    async fn test_get_all() {
         let app = test::init_service(
             App::new()
                 .app_data(Data::from(get_repository_mock_with_data()))
@@ -252,7 +252,7 @@ mod tests {
     }
 
     #[actix_web::test]
-    async fn test_index_get_by_id() {
+    async fn test_get_by_id() {
         let repository = get_repository_mock_with_data();
         let app = test::init_service(
             App::new()
