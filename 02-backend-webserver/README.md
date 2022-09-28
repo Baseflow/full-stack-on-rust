@@ -25,7 +25,7 @@ There are a number of crates that can help us with this:
 * Rouille
 
 For this example, we'll be using the ActixWeb framework as it is very well known, very popular, well maintained, and supports our basic needs out of the box.
-> I've read the book ['Hands on microservices' by Denis Kodolin](https://www.amazon.com/Hands-Microservices-Rust-scalable-microservices/dp/1789342759) which starts of using the bare minimum, just Hyper for the HttpServer. The developer experience is not as good as using frameworks like Actix-Web and Hyper, but is does explain what goes on under the hood, as all of these frameworks are based on Hyper. Highly recommended read if you want to dive deep into this.
+> I've read the book ['Hands on microservices' by Denis Kodolin](https://www.amazon.com/Hands-Microservices-Rust-scalable-microservices/dp/1789342759) which starts of using the bare minimum, just Hyper for the HttpServer. The developer experience is not as good as using frameworks like Actix-Web and Rocket, but is does explain what goes on under the hood, as all of these frameworks are based on Hyper. Highly recommended read if you want to dive deep into this.
 
 ## Adding actix web to our project
 First, let's start off with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
