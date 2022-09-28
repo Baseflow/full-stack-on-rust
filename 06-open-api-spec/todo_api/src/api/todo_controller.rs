@@ -174,7 +174,6 @@ async fn update_todo(
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     let request_body = todo.into_inner();
-
     let todo_id = Uuid::parse_str(&id.into_inner());
     match todo_id {
         Ok(uuid) => {
@@ -337,5 +336,81 @@ mod tests {
             "We should test that we can also use a mock for the same handler"
         );
         assert_eq!(resp.completed, true);
+    }
+
+    #[actix_web::test]
+    async fn test_create_todo() {
+        let repository = get_repository_mock_with_data();
+        let app = test::init_service(
+            App::new()
+                .app_data(Data::from(repository))
+                .service(create_todo),
+        )
+        .await;
+
+        let req = test::TestRequest::post()
+            .uri("/todo")
+            .set_json(&CreateTodoItemRequest {
+                title: "Test create".to_string(),
+                description: "We should test the create method".to_string(),
+            })
+            .to_request();
+
+        let resp: TodoItem = test::call_and_read_body_json(&app, req).await;
+        assert_eq!(resp.title, "Test create");
+        assert_eq!(resp.description, "We should test the create method");
+        assert_eq!(resp.completed, false);
+    }
+
+    #[actix_web::test]
+    async fn test_update_todo() {
+        let repository = get_repository_mock_with_data();
+        let app = test::init_service(
+            App::new()
+                .app_data(Data::from(repository))
+                .service(update_todo),
+        )
+        .await;
+
+        let req = test::TestRequest::put()
+            .uri("/todo/120400b8-eee8-47cc-9e96-5bc0a3e2e874")
+            .set_json(&UpdateTodoItemRequest {
+                new_title: "Test update".to_string(),
+                new_description: "We should test the update method".to_string(),
+                completed: true,
+            })
+            .to_request();
+
+        let resp: TodoItem = test::call_and_read_body_json(&app, req).await;
+        assert_eq!(resp.title, "Test update");
+        assert_eq!(resp.description, "We should test the update method");
+        assert_eq!(resp.completed, true);
+    }
+
+    #[actix_web::test]
+    async fn test_delete_todo() {
+        let repository = get_repository_mock_with_data();
+        let app = test::init_service(
+            App::new()
+                .app_data(Data::from(repository))
+                .service(delete_todo)
+                .service(get_todos),
+        )
+        .await;
+
+        let initial_req = test::TestRequest::default().uri("/todo").to_request();
+        let resp: Vec<TodoItem> = test::call_and_read_body_json(&app, initial_req).await;
+
+        assert_eq!(resp.len(), 2);
+
+        let delete_req = test::TestRequest::delete()
+            .uri("/todo/120400b8-eee8-47cc-9e96-5bc0a3e2e874")
+            .to_request();
+
+        let _ = test::call_and_read_body(&app, delete_req).await;
+
+        let validation_req = test::TestRequest::default().uri("/todo").to_request();
+        let resp: Vec<TodoItem> = test::call_and_read_body_json(&app, validation_req).await;
+        assert_eq!(resp.len(), 1);
     }
 }
