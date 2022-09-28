@@ -10,6 +10,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [ ] open api v3 spec / including swaggerui.
 * [ ] Containerizing our API
 
+## Pick your weapon
 Let's start with building a webserver first that is able to run on a particular portnumber and handle Http requests for us.
 There are a number of crates that can help us with this:
 
@@ -24,7 +25,9 @@ There are a number of crates that can help us with this:
 * Rouille
 
 For this example, we'll be using the ActixWeb framework as it is very well known, very popular, well maintained, and supports our basic needs out of the box.
+> I've read the book ['Hands on microservices' by Denis Kodolin](https://www.amazon.com/Hands-Microservices-Rust-scalable-microservices/dp/1789342759) which starts of using the bare minimum, just Hyper for the HttpServer. The developer experience is not as good as using frameworks like Actix-Web and Hyper, but is does explain what goes on under the hood, as all of these frameworks are based on Hyper. Highly recommended read if you want to dive deep into this.
 
+## Adding actix web to our project
 First, let's start off with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
 #### **`todo_api/Cargo.toml`**
 ```toml
@@ -32,6 +35,7 @@ First, let's start off with adding actix-web to our `Cargo.Toml` file in the `to
 actix-web = "4"
 ```
 
+## Hello world
 Setting up a simple webserver is pretty straight forward:
 
 #### **`todo_api/src/main.rs`**
@@ -91,6 +95,7 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 }
 ```
 
+## Testing our webserver
 We can now perform 2 http requests.
 * `/hello` should return "Hello World!";
 * `/hello/thomas` should return "Hello Thomas"

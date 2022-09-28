@@ -20,6 +20,10 @@ Here's our current list of requirements:
 
 1. [Workspaces](01-workspaces)
 2. [Backend webserver](02-backend-webserver)
+    1. [Pick your weapon](02-backend-webserver/README.md#pick-your-weapon)
+    1. [Adding actix web to our project](02-backend-webserver/README.md#Adding-actix-web-to-our-project)
+    1. [Hello world](02-backend-webserver/README.md#hello-world)
+    1. [Testing our webserver](02-backend-webserver/README.md#testing-our-webserver)
 3. [Rest API](03-rest-api)
     1. [Implementing all Rest methods](03-rest-api/README.md#Implementing-all-Rest-methods)
     2. [Registering the controller methods](03-rest-api/README.md#Registering-the-controller-methods)
