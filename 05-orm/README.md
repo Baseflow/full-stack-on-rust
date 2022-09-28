@@ -8,7 +8,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [x] json serialization
 * [ ] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
-* [ ] jwt token validation for incoming requests
+* [ ] Containerizing our API
 
 We already covered the first 4 requirements, let's see if we can persist our data in a database.
 For communication with the database, ORM tooling is usually the way we interact with our database.

@@ -1,0 +1,14 @@
+version: "3.9"
+volumes:
+    full-stack-on-rust:
+services:
+  db:
+    image: "postgres"
+    ports:
+      - 5555:5432 # use a non default port for demo purposes.
+    environment:
+      POSTGRES_USER: full-stack
+      POSTGRES_DB: "todo_api"
+      POSTGRES_PASSWORD: on-rust
+    volumes:
+      - full-stack-on-rust:/var/lib/postgresql/data

@@ -1,0 +1,20 @@
+[package]
+name = "todo_api"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[dependencies]
+todo_shared = { path = "../todo_shared" }
+actix-web = "4"
+diesel = { version = "2.0.0", features = ["postgres", "r2d2", "uuid"] }
+dotenv = "0.15.0"
+diesel_migrations = "2.0.0"
+r2d2 = "0.8.9"
+env_logger = "0.9.0"
+log = "0.4.17"
+uuid = {version = "1.1.2", features = ["v4"]}
+utoipa = { version = "^2.2.0", features = ["actix_extras"] }
+utoipa-swagger-ui = {version = "^2.0.0", features = ["actix-web"]}
+# Needed for Postgres with musl builds.
+openssl = "*"

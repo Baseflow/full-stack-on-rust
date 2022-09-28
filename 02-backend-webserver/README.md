@@ -8,7 +8,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [ ] json serialization
 * [ ] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
-* [ ] jwt token validation for incoming requests
+* [ ] Containerizing our API
 
 Let's start with building a webserver first that is able to run on a particular portnumber and handle Http requests for us.
 There are a number of crates that can help us with this:

@@ -8,7 +8,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [ ] json serialization
 * [ ] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
-* [ ] jwt token validation for incoming requests
+* [ ] Containerizing our API
 
 We already covered the first 3 requirements, let's see if we can get some actual todo items over the wire.
 To serialize to JSON and deserialize from JSON, we will need another crate, as it is not part of the `std` library.

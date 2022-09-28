@@ -8,7 +8,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [x] json serialization
 * [x] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
-* [ ] jwt token validation for incoming requests
+* [ ] Containerizing our API
 
 We already covered the first 5 requirements, let's see if add generate and serve an automatically genered Open API V3 spec from our source code.
 There aren't a lot of crates our there that support automatic Open API V3 generation, especially compatible with Actix-web. [Utoipa](https://crates.io/crates/utoipa/2.2.0) seems to be the most complete crate available, which also supports various web frameworks. Let's use this for now.

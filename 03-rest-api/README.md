@@ -8,7 +8,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 * [ ] json serialization
 * [ ] orm tooling for connecting to the database
 * [ ] open api v3 spec / including swaggerui.
-* [ ] jwt token validation for incoming requests
+* [ ] Containerizing our API
 
 We already covered the first 2 requirements.
 
