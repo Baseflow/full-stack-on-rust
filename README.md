@@ -6,12 +6,12 @@ It includes step by step documentation on how to setup a full rust stack for bot
 We'll be creating a complete todo platform. Backend, front-end and desktop application, relying fully on Rust.
 Here's our current list of requirements:
 * Backend
-  * [x] http protocol handling
-  * [x] asynchronous request handling
-  * [x] implement REST api specification (GET, POST, PUT, DELETE)
-  * [x] json serialization
-  * [x] orm tooling for connecting to the database
-  * [x] open api v3 spec / including swaggerui.
+  * [ ] http protocol handling
+  * [ ] asynchronous request handling
+  * [ ] implement REST api specification (GET, POST, PUT, DELETE)
+  * [ ] json serialization
+  * [ ] orm tooling for connecting to the database
+  * [ ] open api v3 spec / including swaggerui.
   * [ ] Containerizing our API
 * web-app
     * t.b.d.
