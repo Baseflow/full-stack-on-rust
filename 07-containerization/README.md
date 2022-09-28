@@ -12,7 +12,7 @@ Our backends are usually RESTful API's containing a number of functional feature
 
 We already covered the first 6 requirements, let's see if can wrap this up in a nice container so we can deploy this wherever we like.
 
-## Choosing the right image:
+## Choosing the right image
 First of, we'll need to create a [Docker file](todo_api/Dockerfile) to be able to build our container image.
 There are a number of base images to take here:
 - FROM scratch (Very small)
@@ -27,6 +27,7 @@ Of course, we're aiming for the smallest image for a number of reasons.
 - Less bandwith = less costs
 - Less risk of dependency conflicts
 
+## Embedding openssl to our artifact
 But of course, using smaller base-images also come with some trade offs. For example. OpenSSL (required to communicate with Postgresql) is not available on the scrath and alpine image out of the box. We should include it statically link it to our executable. This seems like a lot of hassle, and luckily, there is a more simple solution available. We can just include the OpenSSL crate to our api project and make sure it is available in our artifact.
 
 Go ahead and add OpenSSL to our **Cargo.toml** file:
@@ -44,6 +45,8 @@ We will also need to include the openssl crate to our todo_api.
 // Needed for musl builds.
 extern crate openssl;
 ```
+
+## Creating the dockerfile
 We can now create our docker file.
 > Note that we create a stripped down version of our workspace yaml file on the fly. We don't need the APP and the Frontend projects here.
 
@@ -71,6 +74,7 @@ We can test if this Dockerfile builds by running
 docker build -f Api.DockerFile . -t todo_api:local
 ```
 
+## Composing it all together
 What would be even cooler, if we could just spin up our api server, with a postgresql database in one go.
 #### **`docker-compose.yaml`**
 ```yaml
@@ -112,6 +116,7 @@ You can start this orchestration by running
 docker-compose up
 ```
 
+## Ready to go
 NOW, what is really cool is that on startup, all our migrations are automatically applied as we implemented by the end of chapter **05-orm**. This means what we don't need to worry about setting up the database. We just spin it up, and are ready to go. 
 
 Running `docker-compose up` immidiatly gives me a working environment to continue our future endeavors **going Full Stack on Rust**.
