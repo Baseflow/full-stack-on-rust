@@ -11,7 +11,7 @@ Our backends are usually RESTful APIs containing several functional features we 
 * [ ] Containerizing our API
 
 We already covered the first 4 requirements, let's see if we can persist our data in a database.
-For communication with the database, ORM tooling is usually the way we interact with our database.
+For communication with the database, ORM (Object Relational Mapper) tooling is usually the way we interact with our database.
 ORM has a couple of advantages: it abstracts actual querying to the database for us. Whether we will be using Postsqres or SqLite, the specifics of that interfacing with a particular type of database will be handled by the ORM tooling. We are not bothered by it in our codebase. 
 Additionally, ORM tooling will take care of serializing/deserializing objects from and to the database. ORM tooling can also be used to keep our database up to date with migrations, which simplifies DevOps. 
 
