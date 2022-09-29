@@ -6,12 +6,12 @@ It includes step-by-step documentation on how to set up a full rust stack for bo
 We'll be creating a complete to-do platform. Backend, front-end, and desktop application, while relying fully on Rust.
 Here's our current list of requirements:
 * Backend
-  * [ ] http protocol handling
-  * [ ] asynchronous request handling
-  * [ ] implement REST api specification (GET, POST, PUT, DELETE)
-  * [ ] json serialization
-  * [ ] orm tooling for connecting to the database
-  * [ ] open api v3 spec / including swaggerui.
+  * [ ] HTTP protocol handling
+  * [ ] Asynchronous request handling
+  * [ ] Implement the REST API specification (GET, POST, PUT, DELETE)
+  * [ ] JSON serialization
+  * [ ] ORM tooling for connecting to the database
+  * [ ] Open API v3 spec / including swagger-ui.
   * [ ] Containerizing our API
 * web-app
     * t.b.d.
