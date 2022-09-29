@@ -1,9 +1,9 @@
 # Full stack on Rust
 
 This is the code and documentation repository for our 'Full stack on Rust' meetup on 29-9-2022.
-It includes step by step documentation on how to setup a full rust stack for both backend as front end applications, along with source code.
+It includes step-by-step documentation on how to set up a full rust stack for both backend and front-end applications, along with source code.
 
-We'll be creating a complete todo platform. Backend, front-end and desktop application, relying fully on Rust.
+We'll be creating a complete to-do platform. Backend, front-end, and desktop application, while relying fully on Rust.
 Here's our current list of requirements:
 * Backend
   * [ ] http protocol handling

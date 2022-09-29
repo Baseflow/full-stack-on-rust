@@ -1,13 +1,13 @@
 # Rest API
 
-Our backends are usually RESTful API's containing a number of functional features we would like to embed in this project.
+Our backends are usually RESTful APIs containing several functional features we would like to embed in this project.
 
-* [x] http protocol handling
-* [x] asynchronous request handling
-* [x] implement REST api specification (GET, POST, PUT, DELETE)
-* [x] json serialization
-* [ ] orm tooling for connecting to the database
-* [ ] open api v3 spec / including swaggerui.
+* [x] HTTP protocol handling
+* [x] Asynchronous request handling
+* [x] Implement the REST api specification (GET, POST, PUT, DELETE)
+* [x] Json serialization
+* [ ] ORM tooling for connecting to the database
+* [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
 
 We already covered the first 4 requirements, let's see if we can persist our data in a database.

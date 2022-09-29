@@ -1,18 +1,18 @@
 # Rest API
 
-Our backends are usually RESTful API's containing a number of functional features we would like to embed in this project.
+Our backends are usually RESTful APIs containing several functional features we would like to embed in this project.
 
-* [ ] http protocol handling
-* [ ] asynchronous request handling
-* [ ] implement REST api specification (GET, POST, PUT, DELETE)
-* [ ] json serialization
-* [ ] orm tooling for connecting to the database
-* [ ] open api v3 spec / including swaggerui.
+* [ ] HTTP protocol handling
+* [ ] Asynchronous request handling
+* [ ] Implement the REST api specification (GET, POST, PUT, DELETE)
+* [ ] Json serialization
+* [ ] ORM tooling for connecting to the database
+* [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
 
 ## Pick your weapon
-Let's start with building a webserver first that is able to run on a particular portnumber and handle Http requests for us.
-There are a number of crates that can help us with this:
+Let's start with building a web server first that can listen on a particular port number and handle HTTP requests for us.
+Several crates can help us with this:
 
 * ActixWeb
 * Hyper
@@ -25,10 +25,10 @@ There are a number of crates that can help us with this:
 * Rouille
 
 For this example, we'll be using the ActixWeb framework as it is very well known, very popular, well maintained, and supports our basic needs out of the box.
-> I've read the book ['Hands on microservices' by Denis Kodolin](https://www.amazon.com/Hands-Microservices-Rust-scalable-microservices/dp/1789342759) which starts of using the bare minimum, just Hyper for the HttpServer. The developer experience is not as good as using frameworks like Actix-Web and Rocket, but is does explain what goes on under the hood, as all of these frameworks are based on Hyper. Highly recommended read if you want to dive deep into this.
+> I've read the book ['Hands on microservices' by Denis Kodolin](https://www.amazon.com/Hands-Microservices-Rust-scalable-microservices/dp/1789342759) which starts off using the bare minimum, just Hyper for the HttpServer. The developer experience is not as good as using frameworks like Actix-Web and Rocket but is does explain what goes on under the hood, as all of these frameworks are based on Hyper. Highly recommended to read if you want to dive deep into this.
 
 ## Adding actix web to our project
-First, let's start off with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
+First, let's start with adding actix-web to our `Cargo.Toml` file in the `todo_api` project:
 #### **`todo_api/Cargo.toml`**
 ```toml
 [dependencies]
@@ -36,7 +36,7 @@ actix-web = "4"
 ```
 
 ## Hello world
-Setting up a simple webserver is pretty straight forward:
+Setting up a simple webserver is pretty straightforward:
 
 #### **`todo_api/src/main.rs`**
 ```rust
@@ -60,9 +60,9 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
-We'll start by adding including all the required modules from the actix-web crate (`get`, `web`, `App`, `HttpServer` and `Responder`).
+We'll start by adding all the required modules from the actix-web crate (`get`, `web`, `App`, `HttpServer`, and `Responder`).
 
-Our main function is setup to be our Tokio asynchronous entry point.
+Our main function is set up to be our Tokio asynchronous entry point.
 ```rust
 #[actix_web::main] // or #[tokio::main]
 async fn main() -> std::io::Result<()> {
@@ -84,9 +84,9 @@ There are 2 ways to register a route and a handler with actix-web.
   ```
   combined with `.service(greet)`
 
-Personally, I prefer the latter as this scales better when our project grows. It gives space to split endpoints to seperate handlers, across multiple files, tigh them in one place with the end point, and just to the registration of the handlers and router in our bootstrapper.
+I prefer the latter as this scales better when our project grows. It gives space to split endpoints to separate handlers, across multiple files, thigh them in one place with the endpoint, and just to the registration of the handlers and router in our bootstrapper.
 
-Note: the is also the option to combine these to methods, which might be convenient when you don't want to use the macro:
+Note: the is also the option to combine these two methods, which might be convenient when you don't want to use the macro:
 ```rust
 .route("/hello/{name}", web::get().to(greet))
 
@@ -96,7 +96,7 @@ async fn greet(name: web::Path<String>) -> impl Responder {
 ```
 
 ## Testing our webserver
-We can now perform 2 http requests.
+We can now perform 2 HTTP requests.
 * `/hello` should return "Hello World!";
 * `/hello/thomas` should return "Hello Thomas"
 

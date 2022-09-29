@@ -2,15 +2,15 @@
 
 Workspaces can be used to split your project into multiple projects/artifacts.
 
-In lots of projects, there is a often shared functionality across the entire project.
+In lots of projects, there is often shared functionality across the entire project.
 
-Rather then duplicating code, you can create a workspace with multiple projects and share functionality across that workspace.
+Rather than duplicating code, you can create a workspace with multiple projects and share functionality across that workspace.
 
 ## Example
 
 Let's say we want to create a client-server application (a Todo app). There is an interface definition shared by the client and the server application.
 
-Imagina the following `Cargo.toml` file.
+Imagine the following `Cargo.toml` file.
 #### **`Cargo.toml`**
 ```yaml
 [workspace]
@@ -22,10 +22,10 @@ members = [
 ]
 ```
 
-We have a `todo_api` crate, which is responsible for serving the todo REST api's.<br/>
-There is also a `todo_frontend` crate, which will be serving a WASM webapplication and communicate with the API to fetch it's data.
+We have a `todo_api` crate, which is responsible for serving the todo REST API's.<br/>
+There is also a `todo_frontend` crate, which will be serving a WASM web application, which will communicate with the API to fetch its data.
 The same goes for the native Linux application `todo_app`, which will also be communicating with the API to fetch the same data.
-In order to share models and perhaps logic between applications, we create another crate called `todo_shared` which will contain all shared models and logic for other projects in the workspace.
+To share models and perhaps logic between applications, we create another crate called `todo_shared` which will contain all shared models and logic for other projects in the workspace.
 
 Let's say we have the following model for TodoItem defined in todo_shared > models > todo_item.rs
 
