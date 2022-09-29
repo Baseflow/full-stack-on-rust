@@ -45,7 +45,7 @@ In this case, we are only interested in interfacing with Postgres, so don't comp
 
 
 ```shell
-cargo install diesel_cli --no-default-features --features postgres
+~ cargo install diesel_cli --no-default-features --features postgres
 ```
 
 I've added a docker-compose file that hosts postgres on a non-default port. You can just run this to run Postgres, and it will most likely not conflict with other postgres instances you might have running on your machine.
@@ -53,7 +53,7 @@ I've added a docker-compose file that hosts postgres on a non-default port. You 
 Navigate to the **todo_api/docker/postgres** folder and run 
 
 ```shell
-docker-compose up -d && docker-compose logs -f
+~ docker-compose up -d && docker-compose logs -f
 ```
 This will spin up a docker image with Postgres on port 5555. It runs in a detached mode, to quitting the command using `ctrl + c` will not kill the container.
 
@@ -62,7 +62,7 @@ Let's start by setting some environment variables for Diesel to tell which endpo
 Navigate to the **todo_api** directory and run the following command:
 
 ```shell
-echo DATABASE_URL=postgres://full-stack:on-rust@localhost:5555/todo_api > .env
+~ echo DATABASE_URL=postgres://full-stack:on-rust@localhost:5555/todo_api > .env
 ```
 
 We can let diesel_cli create the database for us using `diesel setup`. This will also validate if Diesel can connect to the database using the DATABASE_URL from the environment variables.
@@ -74,7 +74,7 @@ Migrations always contain up and down scripts, used for applying and un-applying
 As I mentioned before, ORM tooling can be useful to create/manage migrations, and have them applied to the database for us.
 Diesel_cli can be used to create migrations.
 ```shell
-diesel migration generate create_todo_table
+~ diesel migration generate create_todo_table
 ```
 This will create a new migration in the migrations folder.
 Here we can specify what the required actions are for applying the migration, and undoing the migration.
@@ -550,7 +550,7 @@ impl From<UpdateTodoItemRequest> for TodoEntity {
 
 We can now manage todo items using Restful APIs. Let's try and add a todo item using a post method:
 ```shell
-curl --header "Content-Type: application/json"  --request POST  --data '{"title":"Full stack","description":"Going full stack on rust"}' http://localhost:8080/todo -s | jq
+~ curl --header "Content-Type: application/json"  --request POST  --data '{"title":"Full stack","description":"Going full stack on rust"}' http://localhost:8080/todo -s | jq
 ```
 results in :
 ```json
@@ -569,7 +569,7 @@ results in :
 
 We can now retrieve our new record  if we'd like:
 ```shell
-curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
+~ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 ```
 
 ```json
@@ -588,7 +588,7 @@ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 
 We can also update the record, setting a new title, description, and/or marking the item as completed:
 ```shell
-curl --header "Content-Type: application/json" --request PUT --data '{"new_title":"Complete full stack on rust","new_description":"Going full stack on rust updated", "completed": true}' http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
+~ curl --header "Content-Type: application/json" --request PUT --data '{"new_title":"Complete full stack on rust","new_description":"Going full stack on rust updated", "completed": true}' http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 ```
 
 ```json
@@ -610,11 +610,11 @@ curl --header "Content-Type: application/json" --request PUT --data '{"new_title
 
 Finally, let's delete our record and see if we can retrieve it again:
 ```shell
-curl -X DELETE http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874
+~ curl -X DELETE http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874
 ```
 followed by 
 ```shell
-curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
+~ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 ```
 If our logic works fine, we should no longer get a result from the last request.
 
