@@ -4,29 +4,29 @@ Our backends are usually RESTful APIs containing several functional features we 
 
 * [x] HTTP protocol handling
 * [x] Asynchronous request handling
-* [x] Implement the REST api specification (GET, POST, PUT, DELETE)
-* [x] Json serialization
+* [x] Implement the REST API specification (GET, POST, PUT, DELETE)
+* [x] JSON serialization
 * [ ] ORM tooling for connecting to the database
 * [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
 
 We already covered the first 4 requirements, let's see if we can persist our data in a database.
 For communication with the database, ORM tooling is usually the way we interact with our database.
-ORM has a couple of advantages: it abstracts actual querying to the database for us. Whether we will be using Postsqres or SqLite, the specifics of that interfacing with a particular type of database will be handled by the ORM tooling. We are not bothered with it in our codebase. 
-Additionally, ORM tooling will take care of serializing/deserializing object from and to the database. ORM tooling can also be used to keep our database up to date with migrations, which simplies devops. 
+ORM has a couple of advantages: it abstracts actual querying to the database for us. Whether we will be using Postsqres or SqLite, the specifics of that interfacing with a particular type of database will be handled by the ORM tooling. We are not bothered by it in our codebase. 
+Additionally, ORM tooling will take care of serializing/deserializing objects from and to the database. ORM tooling can also be used to keep our database up to date with migrations, which simplifies DevOps. 
 
 There are a couple of ORM crates available for Rust.
 * Diesel
 * Sea-orm
 * Rustorm
 
-Diesel is by far the most wel known ORM crate with over 4.5 million downloads. It supports SqLite, Postsqres and MySql out of the box, but can be extended with other database engines. We'll stick with that for our full-stack adventure.
+Diesel is by far the most well-known ORM crate with over 4.5 million downloads. It supports SqLite, Postsqres, and MySql out of the box, but can be extended with other database engines. We'll stick with that for our full-stack adventure.
 
 ## Diesel
-Let's add diesel to our api project. We'll also add `dotenvy` to make use of environment variables. 
-For connection pooling we'll use `r2d2`. Additionally, we'll also add `diesel_migrations` for automatic migration deployment upon application startup.
+Let's add diesel to our API project. We'll also add `dotenvy` to make use of environment variables. 
+For connection pooling, we'll use `r2d2`. Additionally, we'll also add `diesel_migrations` for automatic migration deployment upon application startup.
 Out of the box, uuid's are not serialized by diesel, but adding the 'uuid' feature to diesel will supply us with the logic to do so.
-Finally we'll add `env_logger` and `log` to add a logging framework.
+Finally, we'll add `env_logger` and `log` to add a logging framework.
 
 #### **`todo_api/Cargo.toml`**
 ```toml
@@ -40,47 +40,47 @@ log = "0.4.17"
 uuid = {version = "1.1.2", features = ["v4"]}
 ```
 
-You should also install the `diesel_cli` binary to make use of the CLI tooling diesel offers, to create migrations and schema's.
-In this case, we are only interested in interfacing with postgres, so don't compile tooling for other database engines just yet.
+You should also install the `diesel_cli` binary to make use of the CLI tooling diesel offers, to create migrations and schemas.
+In this case, we are only interested in interfacing with Postgres, so don't compile tooling for other database engines just yet.
 
 
 ```shell
 cargo install diesel_cli --no-default-features --features postgres
 ```
 
-I've added a docker-compose file which hosts postgres on a non-default port. You can just run this to run postgres, and it will most likely not conflict with other postgres instances you might have running on your machine.
+I've added a docker-compose file that hosts postgres on a non-default port. You can just run this to run Postgres, and it will most likely not conflict with other postgres instances you might have running on your machine.
 
 Navigate to the **todo_api/docker/postgres** folder and run 
 
 ```shell
 docker-compose up -d && docker-compose logs -f
 ```
-This will spin up a docker image with postgres on port 5555. It runs in a detached mode, to quitting the command using `ctrl + c` will not kill the container.
+This will spin up a docker image with Postgres on port 5555. It runs in a detached mode, to quitting the command using `ctrl + c` will not kill the container.
 
 Now that our database is running, we can hook up diesel to it.
-Let's start by setting some environment variables for Diesel to tell on which endpoint to connect with diesel, and what credentials to use.
+Let's start by setting some environment variables for Diesel to tell which endpoint to connect with diesel, and what credentials to use.
 Navigate to the **todo_api** directory and run the following command:
 
 ```shell
 echo DATABASE_URL=postgres://full-stack:on-rust@localhost:5555/todo_api > .env
 ```
 
-We can let diesel_cli create the database for us using `diesel setup`. This will also validate if Diesel is able to connect to the database using the DATABASE_URL from the environment variables.
+We can let diesel_cli create the database for us using `diesel setup`. This will also validate if Diesel can connect to the database using the DATABASE_URL from the environment variables.
 Additionally, a migrations folder is already created with an 'Initial setup' migration.
 
 Migrations always contain up and down scripts, used for applying and un-applying migrations as you want.
 
 ## Adding tables to the database
-As I mentioned before, ORM tooling can be usefull to create/manage migrations, and have them applied to the database for us.
+As I mentioned before, ORM tooling can be useful to create/manage migrations, and have them applied to the database for us.
 Diesel_cli can be used to create migrations.
 ```shell
 diesel migration generate create_todo_table
 ```
 This will create a new migration in the migrations folder.
-In here we can specify what the required actions are for applying the migration, and undoing the migration.
+Here we can specify what the required actions are for applying the migration, and undoing the migration.
 
 For example: if we want to apply the migration, we'll need to create a todo table to the database.
-If we want to rollback this migration, we want to delete the todo table.
+If we want to roll back this migration, we want to delete the todo table.
 
 Navigate to the newly created `create_todo_table` folder and add the following statement to the `up.sql` and `down.sql` file:
 
@@ -104,10 +104,10 @@ DROP TABLE todos
 We can apply our new migration using `diesel migration run`.
 
 ## Query todo items
-To make sure our item can be queried, serialized and deserialized from/to the database, we'll need to add the `Queryable` derive macro to our todo_item.
-However, the current todo_item model we have represent something that defines our public interface from/to the api and the clients. No clien should have to depend on diesel in order to function.
-Therefore, we'll create a new todo_item entity, which represents the todo_api as returned/send to the database. Only our API project knows about the underlying datasource, and how to interact with that. We can use mapping later to map our entity to the public interface model, returned by our API to the clients.
-You'll notice that it looks very similar, but it has different functions. Serde is not used here for JSON serialization as we don't require that here. However, we included the `Queryable` and `Insertable` macro in order to interact with the database.
+To make sure our item can be queried, serialized, and deserialized from/to the database, we'll need to add the `Queryable` derive macro to our todo_item.
+However, the current todo_item model we have represent something that defines our public interface from/to the API and the clients. No client should have to depend on diesel to function.
+Therefore, we'll create a new todo_item entity, which represents the todo_api as returned/send to the database. Only our API project knows about the underlying data source, and how to interact with that. We can use mapping later to map our entity to the public interface model, returned by our API to the clients.
+You'll notice that it looks very similar, but it has different functions. Serde is not used here for JSON serialization as we don't require that here. However, we included the `Queryable` and `Insertable` macro to interact with the database.
 
 #### **`todo_api/src/entities/todo_item.rs`**
 ```rust
@@ -143,9 +143,9 @@ pub struct TodoEntity {
 ## Connection pooling
 Creating a database connection can easily be done with Diesel. However, creating a new connection for every incoming request doesn't scale all that well. Additionally, Postgresql only allows 100 connections to be opened by default to the server, and will, with high loads, eventually block new connections from being created.
 
-In order to solve this, we'll be using connection pooling. We'll keep a maximum of let's say, 10 connections, alive and re-use them. This scales a lot better as the load on our server increases over time.
+To solve this, we'll be using connection pooling. We'll keep a maximum of let's say, 10 connections, alive and re-use them. This scales a lot better as the load on our server increases over time.
 
-Lets create a **db_context.rs** file which handles all the connection pooling for us:
+Let's create a **db_context.rs** file that handles all the connection pooling for us:
 ```rust
 use diesel::pg::PgConnection;
 use diesel::r2d2::ConnectionManager;
@@ -167,9 +167,9 @@ pub fn get_pool() -> PostgresPool {
 }
 ```
 ## Repository pattern
-This part is more of a personal preference, but I usually use a repository pattern for my data layer interfacing. My controllers and business logic should not be aware on there the data is stored, but rather just know that there is 'a' place (repository) where todo items are stored. I should be able to interchange repositories implementations by changing registrations, rather then changing business logic all over the place. Again, this is personal, as an ORM already abstracts a lot of stuff for us. Don't follow up on my advice if you don't want to.
+This part is more of a personal preference, but I usually use a repository pattern for my data layer interfacing. My controllers and business logic should not be aware of where the data is stored, but rather just know that there is 'a' place (repository) where todo items are stored. I should be able to interchange repositories implementations by changing registrations, rather than changing business logic all over the place. Again, this is personal, as an ORM already abstracts a lot of stuff for us. Don't follow up on my advice if you don't want to.
 
-Let's create a repository pattern by defining the `Repository<T>` trait. It defines a generic astraction for basic CRUD actions on a data source.
+Let's create a repository pattern by defining the `Repository<T>` trait. It defines a generic abstraction for basic CRUD actions on a data source.
 
 #### **`todo_api/src/data/repository.rs`**
 ```rust
@@ -208,7 +208,7 @@ pub trait Repository<T> {
 }
 ```
 
-We can now add a database specific imlementation for Repository<TodoItem> which acts as an Repository for TodoItems that communicates with a database. We could interchange this with an InMemory Repository for example, I case we want to perform unit tests.
+We can now add a database-specific implementation for Repository<TodoItem> which acts as a Repository for TodoItems that communicates with a database. We could interchange this with an InMemory Repository in case we want to perform unit tests, for example.
 
 #### **`todo_api/src/data/todo_repository.rs`**
 ```rust
@@ -284,13 +284,13 @@ impl Repository<TodoEntity> for TodoEntityRepository {
     }
 }
 ```
-As you can see, this specific implementation of `Repository<TodoEntity>` uses the connection pool from Diesel, and performs diesel specific operations for interfacing with the database.
+As you can see, this specific implementation of `Repository<TodoEntity>` uses the connection pool from Diesel, and performs diesel-specific operations for interfacing with the database.
 
 ## Using the repository
 
-Actix-web is able to perform some degree of dependency injection, which is terrific. Whenever our endpoints get called, We don't want to be bothered with setting up the repository and it's database connections. Additionally, we want to work with abstractions, not specific implementations.
+Actix-web can perform some degree of dependency injection, which is terrific. Whenever our endpoints get called, We don't want to be bothered with setting up the repository and its database connections. Additionally, we want to work with abstractions, not specific implementations.
 
-In order to have our Repository<TodoEntity> injected in our handlers, we need to register is within the App_Data:
+To have our Repository<TodoEntity> injected into our handlers, we need to register is within the App_Data:
 Let's alter the todo_controller `configure` method:
 
 #### **`todo_api/src/api/todo_controller.rs`**
@@ -319,7 +319,7 @@ pub fn configure() -> impl FnOnce(&mut ServiceConfig) {
 }
 ```
 
-We can now use our registerd repository in our controllers like this:
+We can now use our registered repository in our controllers like this:
 
 #### **`todo_api/src/api/todo_controller.rs`**
 ```rust
@@ -548,7 +548,7 @@ impl From<UpdateTodoItemRequest> for TodoEntity {
 
 ## Testing our API
 
-We can now manage todo items using Restful api's. Let's try and add a todo item using a post method:
+We can now manage todo items using Restful APIs. Let's try and add a todo item using a post method:
 ```shell
 curl --header "Content-Type: application/json"  --request POST  --data '{"title":"Full stack","description":"Going full stack on rust"}' http://localhost:8080/todo -s | jq
 ```
@@ -586,7 +586,7 @@ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 }
 ```
 
-We can also update the record, setting a new title, description and/or marking the item as completed:
+We can also update the record, setting a new title, description, and/or marking the item as completed:
 ```shell
 curl --header "Content-Type: application/json" --request PUT --data '{"new_title":"Complete full stack on rust","new_description":"Going full stack on rust updated", "completed": true}' http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 ```
@@ -604,11 +604,11 @@ curl --header "Content-Type: application/json" --request PUT --data '{"new_title
   "created_at": {
     "secs_since_epoch": 1664196727,
     "nanos_since_epoch": 374136000
-  }
+  } 
 }
 ```
 
-Finally, let's delete out record and see if we can retrieve it again:
+Finally, let's delete our record and see if we can retrieve it again:
 ```shell
 curl -X DELETE http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874
 ```
@@ -619,7 +619,7 @@ curl http://localhost:8080/todo/80b94a3d-6b3f-4a57-a31d-9ef027ac8874 -s | jq
 If our logic works fine, we should no longer get a result from the last request.
 
 ## Automatically apply pending Migrations
-Whenever we make changes to our database model, we have to make sure migrations are applied to our databases. I mention plural here, because you have one on your machine, your co-worker has one too. Then there is an CD/CI chain for various environments (DEV/STAGING/PRODUCTION). Chances of us forgetting to apply these migrations are definitly there (unless managed by CD).
+Whenever we make changes to our database model, we have to make sure migrations are applied to our databases. I mention plural here because you have one on your machine, and your co-worker has one too. Then there is a CD/CI chain for various environments (DEV/STAGING/PRODUCTION). Chances of us forgetting to apply these migrations are definitely there (unless managed by CD).
 
 Diesel is capable of automatically applying changes to our database when our executable starts.
 
@@ -665,9 +665,9 @@ async fn main() -> std::io::Result<()> {
 }
 ```
 
-That's it, this wraps up our orm tooling chapter. It's been a long ride, but our backend project is slowly comming towards an end almost.
+That's it, this wraps up our orm tooling chapter. It's been a long ride, but our backend project is slowly coming towards an end almost.
 
 ## BONUS IF YOU MADE IT HERE
 If you're still wondering why we added the abstraction for `Repository<TodoEntity>`. I've added unit tests to the [todo controller](todo_api/src/api/todo_controller.rs). 
-You'll see i've added a mock repository that mimics the behavior of our database variant of the repository, but uses an in-memory datastore for it.
-I can register that, in stead of the original variant, and unit test (not intergration test) my request handlers and mapping, without modifying any code. This is only possible because we rely on a abstraction.
+You'll see I've added a mock repository that mimics the behavior of our database variant of the repository but uses an in-memory datastore for it.
+I can register that, instead of the original variant, and unit test (not integration test) my request handlers and mapping, without modifying any code. This is only possible because we rely on an abstraction.

@@ -4,8 +4,8 @@ Our backends are usually RESTful APIs containing several functional features we 
 
 * [x] HTTP protocol handling
 * [x] Asynchronous request handling
-* [ ] Implement the REST api specification (GET, POST, PUT, DELETE)
-* [ ] Json serialization
+* [ ] Implement the REST API specification (GET, POST, PUT, DELETE)
+* [ ] JSON serialization
 * [ ] ORM tooling for connecting to the database
 * [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
@@ -15,8 +15,8 @@ We already covered the first 2 requirements.
 Before we go any further on the other requirements, let's create some more REST endpoints for managing our todo_items.
 
 ## Implementing all Rest methods
-Typically, what I would like to do it create something like a `Controller`, which handles the request for a particilar entity.
-For example: a `todo controller` would handle all incoming requests related to `todo items`.
+Typically, what I would like to do is create something like a `Controller`, which handles the request for a particular entity.
+For example, a `todo controller` would handle all incoming requests related to `todo items`.
 
 Let's create `todo_controller.rs` and add the following functions:
 
@@ -48,10 +48,10 @@ async fn update_todo(_id: web::Path<String>) -> impl Responder {
 }
 ```
 
-This defines handlers for the given routes and Http methods. 
+This defines handlers for the given routes and HTTP methods. 
 
 ## Registering the controller methods
-I could go to our `main.rs` file and register each handler individually. Rather, I just register the entire controller there at once, and let the controller take care of the individual registration. This keeps the all the logic at one file, and doesn't clutter my `main.rs` file. This will help me down the line, as my project grows.
+I could go to our `main.rs` file and register each handler individually. Rather, I just register the entire controller there at once and let the controller take care of the individual registration. This keeps all the logic in one file and doesn't clutter my `main.rs` file. This will help me down the line, as my project grows.
 
 To be able to register all endpoints at once, I create a configure method, which I can call in my `main.rs` file.
 
@@ -84,7 +84,7 @@ Nice and clean.
 
 ## Testing our endpoints
 
-We now have RESTful api endpoints to handle our todo management
+We now have RESTful API endpoints to handle our todo management
 ```shell
 ~ curl http://localhost:8080/todo/549dd9a2-aa7a-4d29-ad4f-ded12fe02af8
 hello from get todos by id

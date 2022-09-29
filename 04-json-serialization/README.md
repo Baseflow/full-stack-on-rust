@@ -4,20 +4,20 @@ Our backends are usually RESTful APIs containing several functional features we 
 
 * [x] HTTP protocol handling
 * [x] Asynchronous request handling
-* [x] Implement the REST api specification (GET, POST, PUT, DELETE)
-* [ ] Json serialization
+* [x] Implement the REST API specification (GET, POST, PUT, DELETE)
+* [ ] JSON serialization
 * [ ] ORM tooling for connecting to the database
 * [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
 
 We already covered the first 3 requirements, let's see if we can get some actual todo items over the wire.
 To serialize to JSON and deserialize from JSON, we will need another crate, as it is not part of the `std` library.
-There are a number of Crates that can do this for us, but the most well known crate is [Serde](https://docs.rs/serde_json/latest/serde_json/), so we'll stick with that for now.
+Several crates can do this for us, but the most well-known crate is [Serde](https://docs.rs/serde_json/latest/serde_json/), so we'll stick with that for now.
 
-Let's add Serde to our `Cargo.Toml` file. Note that our `todo_item` stuct resides in the `todo_shared` crate. So we will need to add it there. We will use this crate for both our backend as frontend projects. Any project including the `todo_shared` crate, will directly be able to (de)serialize `todo_item` entities from and to JSON..
+Let's add Serde to our `Cargo.Toml` file. Note that our `todo_item` struct resides in the `todo_shared` crate. So we will need to add it there. We will use this crate for both our backend and front-end projects. Any project including the `todo_shared` crate will directly be able to (de)serialize `todo_item` entities from and to JSON.
 
 Additionally, we'll add the `derive` feature from Serde, to be able to make use of the device macro and keep our code nice and clean.
-Important note here: in order for us to be able to (de)serialize UUID from/to Json using Serde, we'll need to the serde feature for uuid too.
+> An important note here: in order for us to be able to (de)serialize UUID from/to Json using Serde, we'll need the serde feature for uuid too.
 #### **`todo_shared/Cargo.toml`**
 ```toml
 [dependencies]
@@ -28,9 +28,9 @@ uuid = {version = "1.1.2", features = ["v4", "serde"]}
 
 We can now add the Serialize and Deserialize derive macro's on top of our `todo_item` struct;
 
-NOTE: Unfortunately, if we want to use JSON with Actixweb, we can only work with owned types, not borrowed.
-(Documentation)[https://docs.rs/actix-web/3.3.2/actix_web/web/struct.Json.html#impl-FromRequest]
-It indicates we can only use owned, not borrowed, data with the Json type if we want actix-web to extract types from the request for you. Thus we will have to use String for our &str members here.
+> NOTE: Unfortunately, if we want to use JSON with Actixweb, we can only work with owned types, not borrowed types.
+> (Documentation)[https://docs.rs/actix-web/3.3.2/actix_web/web/struct.Json.html#impl-FromRequest]
+> It indicates we can only use owned, not borrowed, data with the Json type if we want actix-web to extract types from the request for you. Thus we will have to use String for our &str members here.
 
 #### **`todo_shared/src/models/todo_item.rs`**
 ```rust
@@ -251,4 +251,4 @@ Notice we also send JSON in our request body.
   }
 }
 ```
-Nice! We can now read and write json over the wire. Up next is actually persisting our data
+Nice! We can now read and write JSON over the wire. Up next is persisting our data

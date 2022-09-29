@@ -4,16 +4,16 @@ Our backends are usually RESTful APIs containing several functional features we 
 
 * [x] HTTP protocol handling
 * [x] Asynchronous request handling
-* [x] Implement the REST api specification (GET, POST, PUT, DELETE)
-* [x] Json serialization
+* [x] Implement the REST API specification (GET, POST, PUT, DELETE)
+* [x] JSON serialization
 * [x] ORM tooling for connecting to the database
 * [ ] Open API V3 spec / including swagger-ui.
 * [ ] Containerizing our API
 
-We already covered the first 5 requirements, let's see if add generate and serve an automatically genered Open API V3 spec from our source code.
-There aren't a lot of crates our there that support automatic Open API V3 generation, especially compatible with Actix-web. [Utoipa](https://crates.io/crates/utoipa/2.2.0) seems to be the most complete crate available, which also supports various web frameworks. Let's use this for now.
+We already covered the first 5 requirements, let's see if add generate and serve an automatically generated Open API V3 spec from our source code.
+There aren't a lot of crates out there that support automatic Open API V3 generation, especially compatible with Actix-web. [Utoipa](https://crates.io/crates/utoipa/2.2.0) seems to be the most complete crate available, which also supports various web frameworks. Let's use this for now.
 
-Add the following dependencies to the Cargo.toml file in our api project:
+Add the following dependencies to the Cargo.toml file in our API project:
 
 #### **`todo_api/Cargo.toml`**
 ```toml
@@ -21,14 +21,14 @@ utoipa = { version = "^2.2.0", features = ["actix_extras"] }
 utoipa-swagger-ui = {version = "^2.2.0", features = ["actix-web"]}
 ```
 
-We'll also need to add some utoipa to our shared project, where our interface models reside.
+We'll also need to add some Utoipa to our shared project, where our interface models reside.
 #### **`todo_api/Cargo.toml`**
 ```toml
 utoipa = "^2.2.0"
 ```
 
 ## Including our public models to the Open API V3 spec
-Now that we've loaded `Utoipa` to our shared project, we can make the models a part of the open API spec. It's pretty straight forward. Add `use utoipa::ToSchema;` to the top of the `todo_item.rs` file and add the derive macro for 'ToSchema' to our structs:
+Now that we've loaded `Utoipa` to our shared project, we can make the models a part of the open API spec. It's pretty straightforward. Add `use utoipa::ToSchema;` to the top of the `todo_item.rs` file and add the derive macro for 'ToSchema' to our structs:
 
 ```rust
 use utoipa::ToSchema;
@@ -50,7 +50,7 @@ pub struct CreateTodoItemRequest {
 ```
 
 ## Including information about our endpoints
-We should also add information regarding our endpoints to the Open API spec. Utoipa provides us the the macro's to do so. We should also add nice documentation to our controllers, which 
+We should also add information regarding our endpoints to the Open API spec. Utoipa provides us the macro's to do so. We should also add nice documentation to our controllers, which 
 
 #### **`todo_api/src/api/todo_controller.rs`**
 ```rust
@@ -160,7 +160,7 @@ async fn update_todo(
 ## Configure Open API
 
 Now that we have defined our endpoints, we can start wiring up Utoipa. 
-First let's configure utoipa in our api module.
+First, let's configure Utoipa in our API module.
 
 #### **`todo_api/src/api/mod.rs`**
 ```rust
@@ -193,7 +193,7 @@ pub fn register_open_api_spec() -> utoipa::openapi::OpenApi {
 ```
 
 ## Setup swagger-ui
-And finally we'll add an endpoint for out swagger-ui in our main.rs file.
+And finally, we'll add an endpoint for out swagger-ui in our main.rs file.
 
 #### **`todo_api/src/main.rs`**
 ```rust
@@ -223,8 +223,8 @@ And when we navigate to [localhost](http://localhost:8080/swagger-ui/) we'll be 
 ![image](https://user-images.githubusercontent.com/35781348/192316201-065370b4-56f7-434e-b99a-490ac82ad7fa.png)
 
 ## BONUS
-Do you have third parties intergrating with your backend. Here is why the open-api spec is so powerful:
+Do you have third parties integrating with your backend. Here is why the open-api spec is so powerful:
 Navigate to [Swagger editor](https://editor-next.swagger.io/) and paste in the yaml definition from the Open API spec. 
-From here you can just generate a client for all sorts of programming languages. This will make intergration for your 3rd parties much easier.
-> Note, I'm currently unable to output the yaml definition yet, but converting online van [JSON > YAML](https://www.json2yaml.com/) acually works pretty well.
+From here you can just generate a client for all sorts of programming languages. This will make integration for your 3rd parties much easier.
+> Note, I'm currently unable to output the yaml definition yet, but converting online van [JSON > YAML](https://www.json2yaml.com/) works pretty well.
 > Will update this repository later with a YAML example.
