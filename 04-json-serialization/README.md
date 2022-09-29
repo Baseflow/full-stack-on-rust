@@ -29,7 +29,7 @@ uuid = {version = "1.1.2", features = ["v4", "serde"]}
 We can now add the Serialize and Deserialize derive macro's on top of our `todo_item` struct;
 
 > NOTE: Unfortunately, if we want to use JSON with Actixweb, we can only work with owned types, not borrowed types.
-> (Documentation)[https://docs.rs/actix-web/3.3.2/actix_web/web/struct.Json.html#impl-FromRequest]
+> [Documentation](https://docs.rs/actix-web/3.3.2/actix_web/web/struct.Json.html#impl-FromRequest)
 > It indicates we can only use owned, not borrowed, data with the Json type if we want actix-web to extract types from the request for you. Thus we will have to use String for our &str members here.
 
 #### **`todo_shared/src/models/todo_item.rs`**
