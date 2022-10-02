@@ -1,5 +1,6 @@
 use actix_web::web::ServiceConfig;
 use actix_web::{delete, get, post, put, web, Responder};
+use uuid::Uuid;
 
 #[get("/todo")]
 async fn get_todos() -> impl Responder {
@@ -7,7 +8,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from get todos by id")
 }
 
@@ -17,12 +18,12 @@ async fn create_todo() -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<String>) -> impl Responder {
+async fn delete_todo(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from delete todo")
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<String>) -> impl Responder {
+async fn update_todo(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from update todos with id")
 }
 

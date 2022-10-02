@@ -28,7 +28,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from get todos by id")
 }
 
@@ -38,17 +38,26 @@ async fn create_todo() -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<String>) -> impl Responder {
+async fn delete_todo(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from delete todo with id")
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<String>) -> impl Responder {
+async fn update_todo(_id: web::Path<Uuid>) -> impl Responder {
     format!("hello from update todos with id")
 }
 ```
 
 This defines handlers for the given routes and HTTP methods. 
+
+Note that we are using Uuid for path parameters. This will work, as long as we have Uuid with Serde included in our **Cargo.toml** file in the todo_api project.
+
+#### **`todo_api/Cargo.toml`**
+```toml
+[dependencies]
+uuid = {version = "1.1.2", features = ["v4", "serde"]}
+```
+
 
 ## Registering the controller methods
 I could go to our `main.rs` file and register each handler individually. Rather, I just register the entire controller there at once and let the controller take care of the individual registration. This keeps all the logic in one file and doesn't clutter my `main.rs` file. This will help me down the line, as my project grows.

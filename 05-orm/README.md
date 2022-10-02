@@ -325,7 +325,7 @@ We can now use our registered repository in our controllers like this:
 ```rust
 #[get("/todo/{id}")]
 async fn get_todo_by_id(
-    id: web::Path<String>, // The identifier of the item to retrieve
+    id: web::Path<Uuid>, // The identifier of the item to retrieve
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     ...
@@ -363,32 +363,23 @@ async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Respond
 
 #[get("/todo/{id}")]
 async fn get_todo_by_id(
-    id: web::Path<String>, // The identifier of the item to retrieve
+    id: web::Path<Uuid>, // The identifier of the item to retrieve
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
-    let todo_id = Uuid::parse_str(&id.into_inner());
-
-    match todo_id {
-        Ok(uuid) => {
-            // Query our entity from the data store.
-            let entity = repository.get_by_id(uuid);
-            match entity {
-                Some(item) => {
-                    // If we found one, use the From<T> trait to convert to a TodoItem
-                    let response: TodoItem = item.into();
-                    // Send the response
-                    HttpResponse::Ok().json(response)
-                }
-                _ => {
-                    warn!("Todo item with id {} was not found in the data store", uuid);
-                    // Let the caller know the resource was not found.
-                    HttpResponse::NotFound().finish()
-                }
-            }
+    // Query our entity from the data store.
+    let uuid = id.into_inner();
+    let entity = repository.get_by_id(uuid);
+    match entity {
+        Some(item) => {
+            // If we found one, use the From<T> trait to convert to a TodoItem
+            let response: TodoItem = item.into();
+            // Send the response
+            HttpResponse::Ok().json(response)
         }
         _ => {
-            warn!("User supplied an unvalid uuid");
-            HttpResponse::BadRequest().finish()
+            warn!("Todo item with id {} was not found in the data store", uuid);
+            // Let the caller know the resource was not found.
+            HttpResponse::NotFound().finish()
         }
     }
 }
@@ -414,57 +405,38 @@ async fn create_todo(
 
 #[delete("/todo/{id}")]
 async fn delete_todo(
-    id: web::Path<String>,
+    id: web::Path<Uuid>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
-    let todo_id = Uuid::parse_str(&id.into_inner());
-    match todo_id {
-        Ok(uuid) => {
-            let result = repository.delete(uuid);
-            match result {
-                Ok(success) => match success {
-                    true => HttpResponse::Ok().finish(),
-                    _ => HttpResponse::NotFound().finish(),
-                },
-                _ => {
-                    error!("Unable to delete item");
-                    HttpResponse::InternalServerError().finish()
-                }
-            }
-        }
+    let result = repository.delete(id.into_inner());
+    match result {
+        Ok(success) => match success {
+            true => HttpResponse::Ok().finish(),
+            _ => HttpResponse::NotFound().finish(),
+        },
         _ => {
-            warn!("User supplied an unvalid uuid");
-            HttpResponse::BadRequest().finish()
+            error!("Unable to delete item");
+            HttpResponse::InternalServerError().finish()
         }
     }
 }
 
 #[put("/todo/{id}")]
 async fn update_todo(
-    id: web::Path<String>,
+    id: web::Path<Uuid>,
     todo: Json<UpdateTodoItemRequest>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     let request_body = todo.into_inner();
-
-    let todo_id = Uuid::parse_str(&id.into_inner());
-    match todo_id {
-        Ok(uuid) => {
-            let result = repository.update(uuid, request_body.into());
-            match result {
-                Ok(entity) => {
-                    let result: TodoItem = entity.into();
-                    HttpResponse::Ok().json(result)
-                }
-                _ => {
-                    error!("Unable to update existing todo item");
-                    HttpResponse::InternalServerError().finish()
-                }
-            }
+    let result = repository.update(id.into_inner(), request_body.into());
+    match result {
+        Ok(entity) => {
+            let result: TodoItem = entity.into();
+            HttpResponse::Ok().json(result)
         }
         _ => {
-            warn!("User supplied an unvalid uuid");
-            HttpResponse::BadRequest().finish()
+            error!("Unable to update existing todo item");
+            HttpResponse::InternalServerError().finish()
         }
     }
 }

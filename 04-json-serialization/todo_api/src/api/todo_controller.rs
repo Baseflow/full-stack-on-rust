@@ -2,6 +2,7 @@ use actix_web::web::{Json, ServiceConfig};
 use actix_web::HttpResponse;
 use actix_web::{delete, get, post, put, web, Responder};
 use todo_shared::{CreateTodoItemRequest, TodoItem, UpdateTodoItemRequest};
+use uuid::Uuid;
 
 #[get("/todo")]
 async fn get_todos() -> impl Responder {
@@ -13,7 +14,7 @@ async fn get_todos() -> impl Responder {
 }
 
 #[get("/todo/{id}")]
-async fn get_todo_by_id(_id: web::Path<String>) -> impl Responder {
+async fn get_todo_by_id(_id: web::Path<Uuid>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(
         "going full stack on rust",
         "we need more love for rust",
@@ -26,12 +27,12 @@ async fn create_todo(todo: Json<CreateTodoItemRequest>) -> impl Responder {
 }
 
 #[delete("/todo/{id}")]
-async fn delete_todo(_id: web::Path<String>) -> impl Responder {
+async fn delete_todo(_id: web::Path<Uuid>) -> impl Responder {
     HttpResponse::Ok().finish()
 }
 
 #[put("/todo/{id}")]
-async fn update_todo(_id: web::Path<String>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
+async fn update_todo(_id: web::Path<Uuid>, todo: Json<UpdateTodoItemRequest>) -> impl Responder {
     HttpResponse::Ok().json(TodoItem::new(&todo.new_title, &todo.new_description))
 }
 

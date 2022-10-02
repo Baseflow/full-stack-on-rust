@@ -82,7 +82,7 @@ async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Respond
 )]
 #[get("/todo/{id}")]
 async fn get_todo_by_id(
-    id: web::Path<String>, // The identifier of the item to retrieve
+    id: web::Path<Uuid>, // The identifier of the item to retrieve
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     ...
@@ -124,7 +124,7 @@ async fn create_todo(
 )]
 #[delete("/todo/{id}")]
 async fn delete_todo(
-    id: web::Path<String>,
+    id: web::Path<Uuid>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
     ...
@@ -149,7 +149,7 @@ async fn delete_todo(
 )]
 #[put("/todo/{id}")]
 async fn update_todo(
-    id: web::Path<String>,
+    id: web::Path<Uuid>,
     todo: Json<UpdateTodoItemRequest>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
 ) -> impl Responder {
