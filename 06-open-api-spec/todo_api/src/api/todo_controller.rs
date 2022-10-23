@@ -1,6 +1,6 @@
 use actix_web::web::{Json, ServiceConfig};
 use actix_web::HttpResponse;
-use actix_web::{delete, get, post, put, web, Responder};
+use actix_web::{delete, get, post, put, web, Error};
 use todo_shared::{CreateTodoItemRequest, TodoItem, UpdateTodoItemRequest};
 
 use crate::data::repository::Repository;
@@ -22,15 +22,17 @@ use log::{error, warn};
     )
 )]
 #[get("/todo")]
-async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Responder {
+async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> Result<HttpResponse, Error> {
     // Get entities from the datastore
-    let entities = repository.get_all();
+    let entities = web::block(move || repository.get_all())
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
 
     // Map our entities to our public struct TodoItem
     let response: Vec<TodoItem> = entities.into_iter().map(|entity| entity.into()).collect();
 
     // Send the response
-    HttpResponse::Ok().json(response)
+    Ok(HttpResponse::Ok().json(response))
 }
 
 /// Get Todo by given todo id.
@@ -50,21 +52,25 @@ async fn get_todos(repository: Data<dyn Repository<TodoEntity>>) -> impl Respond
 async fn get_todo_by_id(
     id: web::Path<Uuid>, // The identifier of the item to retrieve
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
-) -> impl Responder {
+) -> Result<HttpResponse, Error> {
     let uuid = id.into_inner();
+
     // Query our entity from the data store.
-    let entity = repository.get_by_id(uuid);
+    let entity = web::block(move || repository.get_by_id(uuid))
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
     match entity {
         Some(item) => {
             // If we found one, use the From<T> trait to convert to a TodoItem
             let response: TodoItem = item.into();
             // Send the response
-            HttpResponse::Ok().json(response)
+            Ok(HttpResponse::Ok().json(response))
         }
         _ => {
             warn!("Todo item with id {} was not found in the data store", uuid);
             // Let the caller know the resource was not found.
-            HttpResponse::NotFound().finish()
+            Ok(HttpResponse::NotFound().finish())
         }
     }
 }
@@ -84,17 +90,19 @@ async fn get_todo_by_id(
 async fn create_todo(
     todo: Json<CreateTodoItemRequest>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
-) -> impl Responder {
+) -> Result<HttpResponse, Error> {
     let request_body = todo.into_inner();
-    let result = repository.insert(request_body.into());
+    let result = web::block(move || repository.insert(request_body.into()))
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
     match result {
         Ok(entity) => {
             let result: TodoItem = entity.into();
-            HttpResponse::Ok().json(result)
+            Ok(HttpResponse::Ok().json(result))
         }
         _ => {
             error!("Unable to insert new todo item");
-            HttpResponse::InternalServerError().finish()
+            Ok(HttpResponse::InternalServerError().finish())
         }
     }
 }
@@ -118,17 +126,13 @@ async fn create_todo(
 async fn delete_todo(
     id: web::Path<Uuid>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
-) -> impl Responder {
-    let result = repository.delete(id.into_inner());
+) -> Result<HttpResponse, Error> {
+    let result = web::block(move || repository.delete(id.into_inner()))
+        .await
+        .map_err(actix_web::error::ErrorInternalServerError)?;
     match result {
-        Ok(success) => match success {
-            true => HttpResponse::Ok().finish(),
-            _ => HttpResponse::NotFound().finish(),
-        },
-        _ => {
-            error!("Unable to delete item");
-            HttpResponse::InternalServerError().finish()
-        }
+        Ok(true) => Ok(HttpResponse::Ok().finish()),
+        _ => Ok(HttpResponse::NotFound().finish()),
     }
 }
 
@@ -154,19 +158,15 @@ async fn update_todo(
     id: web::Path<Uuid>,
     todo: Json<UpdateTodoItemRequest>,
     repository: Data<dyn Repository<TodoEntity>>, // The todo item repository, injected from app_data
-) -> impl Responder {
+) -> Result<HttpResponse, Error> {
     let request_body = todo.into_inner();
-    let result = repository.update(id.into_inner(), request_body.into());
-    match result {
-        Ok(entity) => {
-            let result: TodoItem = entity.into();
-            HttpResponse::Ok().json(result)
-        }
-        _ => {
-            error!("Unable to update existing todo item");
-            HttpResponse::InternalServerError().finish()
-        }
-    }
+    let uuid = id.into_inner();
+    let entity = web::block(move || repository.update(uuid, request_body.into()))
+        .await?
+        .map_err(actix_web::error::ErrorInternalServerError)?;
+
+    let result: TodoItem = entity.into();
+    Ok(HttpResponse::Ok().json(result))
 }
 
 pub fn configure() -> impl FnOnce(&mut ServiceConfig) {

@@ -1,4 +1,4 @@
-pub trait Repository<T> {
+pub trait Repository<T>: Send + Sync {
     /// Returns all availble instances of `<T>`
     fn get_all(&self) -> Vec<T>;
 
